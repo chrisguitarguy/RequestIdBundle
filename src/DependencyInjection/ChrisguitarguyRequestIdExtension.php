@@ -20,6 +20,7 @@ use Chrisguitarguy\RequestId\SimpleIdStorage;
 use Chrisguitarguy\RequestId\Uuid4IdGenerator;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
 use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
+use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
 
 /**
  * Registers some container congiruation with the application.
@@ -51,6 +52,14 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
             ]);
             $logDef->addTag('monolog.processor');
             $container->setDefinition('chrisguitarguy.requestid.monolog_processor', $logDef);
+        }
+
+        if (class_exists('Twig_Extension') && !empty($config['enable_twig'])) {
+            $twigDef = new Definition(RequestIdExtension::class, [
+                new Reference($storeId),
+            ]);
+            $twigDef->addTag('twig.extension');
+            $container->setDefinition('chrisguitarguy.requestid.twig_extension', $twigDef);
         }
     }
 }

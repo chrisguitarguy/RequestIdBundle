@@ -12,20 +12,28 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class HttpTest extends TestCase
 {
     public function testRequestThatAlreadyHasARequestIdDoesNotReplaceIt()
     {
         $client = $this->createClient();
 
-        $client->request('GET', '/', [], [], [
+        $crawler = $client->request('GET', '/', [], [], [
             'HTTP_REQUEST_ID'   => 'testId',
         ]);
         $resp = $client->getResponse();
 
+        $this->assertSuccessfulResponse($resp);
         $this->assertEquals('testId', $resp->headers->get('Request-Id'));
         $this->assertEquals('testId', $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId());
         $this->assertLogsHaveRequestId($client, 'testId');
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('h1:contains("testId")')->count(),
+            'should have the request ID in the response HTML'
+        );
     }
 
     public function testAlreadySetRequestIdUsesValueFromStorage()
@@ -33,28 +41,40 @@ class HttpTest extends TestCase
         $client = $this->createClient();
         $client->getContainer()->get('chrisguitarguy.requestid.storage')->setRequestId('abc123');
 
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
         $resp = $client->getResponse();
         $req = $client->getRequest();
 
+        $this->assertSuccessfulResponse($resp);
         $this->assertEquals('abc123', $resp->headers->get('Request-Id'));
         $this->assertEquals('abc123', $req->headers->get('Request-Id'));
         $this->assertLogsHaveRequestId($client, 'abc123');
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('h1:contains("abc123")')->count(),
+            'should have the request ID in the response HTML'
+        );
     }
 
     public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse()
     {
         $client = $this->createClient();
 
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
         $resp = $client->getResponse();
         $req = $client->getRequest();
 
+        $this->assertSuccessfulResponse($resp);
         $id = $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId();
         $this->assertNotEmpty($id);
         $this->assertEquals($id, $resp->headers->get('Request-Id'));
         $this->assertEquals($id, $req->headers->get('Request-Id'));
         $this->assertLogsHaveRequestId($client, $id);
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter(sprintf('h1:contains("%s")', $id))->count(),
+            'should have the request ID in the response HTML'
+        );
     }
 
     private function getLogs($client)
@@ -67,5 +87,12 @@ class HttpTest extends TestCase
         foreach ($this->getLogs($client) as $msg) {
             $this->assertContains($id, $msg); // veri
         }
+    }
+
+    private function assertSuccessfulResponse($resp)
+    {
+        $this->assertInstanceOf(Response::class, $resp);
+        $this->assertGreaterThanOrEqual(200, $resp->getStatusCode());
+        $this->assertLessThan(300, $resp->getStatusCode());
     }
 }
