@@ -43,6 +43,10 @@ final class Configuration implements ConfigurationInterface
             ->scalarNode('generator_service')
                 ->info('The service name for the request ID generator. Defaults to `Uuid4IdGenerator`')
             ->end()
+            ->booleanNode('enable_monolog')
+                ->info('Whether or not to turn on the request ID processor for monolog')
+                ->defaultTrue()
+            ->end()
         ;
 
         return $tree;

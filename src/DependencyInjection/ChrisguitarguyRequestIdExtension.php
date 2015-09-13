@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Chrisguitarguy\RequestId\SimpleIdStorage;
 use Chrisguitarguy\RequestId\Uuid4IdGenerator;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
+use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
 
 /**
  * Registers some container congiruation with the application.
@@ -43,5 +44,13 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
         ]);
         $listenerDef->addTag('kernel.event_subscriber');
         $container->setDefinition('chrisguitarguy.requestid.listener', $listenerDef);
+
+        if (!empty($config['enable_monolog'])) {
+            $logDef = new Definition(RequestIdProcessor::class, [
+                new Reference($storeId),
+            ]);
+            $logDef->addTag('monolog.processor');
+            $container->setDefinition('chrisguitarguy.requestid.monolog_processor', $logDef);
+        }
     }
 }

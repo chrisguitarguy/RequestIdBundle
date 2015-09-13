@@ -25,6 +25,7 @@ class HttpTest extends TestCase
 
         $this->assertEquals('testId', $resp->headers->get('Request-Id'));
         $this->assertEquals('testId', $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId());
+        $this->assertLogsHaveRequestId($client, 'testId');
     }
 
     public function testAlreadySetRequestIdUsesValueFromStorage()
@@ -38,6 +39,7 @@ class HttpTest extends TestCase
 
         $this->assertEquals('abc123', $resp->headers->get('Request-Id'));
         $this->assertEquals('abc123', $req->headers->get('Request-Id'));
+        $this->assertLogsHaveRequestId($client, 'abc123');
     }
 
     public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse()
@@ -52,5 +54,18 @@ class HttpTest extends TestCase
         $this->assertNotEmpty($id);
         $this->assertEquals($id, $resp->headers->get('Request-Id'));
         $this->assertEquals($id, $req->headers->get('Request-Id'));
+        $this->assertLogsHaveRequestId($client, $id);
+    }
+
+    private function getLogs($client)
+    {
+        return $client->getContainer()->get('log.memory_handler')->getLogs();
+    }
+
+    private function assertLogsHaveRequestId($client, $id)
+    {
+        foreach ($this->getLogs($client) as $msg) {
+            $this->assertContains($id, $msg); // veri
+        }
     }
 }
