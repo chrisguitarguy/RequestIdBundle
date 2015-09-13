@@ -23,8 +23,21 @@ class HttpTest extends TestCase
         ]);
         $resp = $client->getResponse();
 
-        $this->assertTrue($resp->headers->has('Request-Id'));
         $this->assertEquals('testId', $resp->headers->get('Request-Id'));
+        $this->assertEquals('testId', $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId());
+    }
+
+    public function testAlreadySetRequestIdUsesValueFromStorage()
+    {
+        $client = $this->createClient();
+        $client->getContainer()->get('chrisguitarguy.requestid.storage')->setRequestId('abc123');
+
+        $client->request('GET', '/');
+        $resp = $client->getResponse();
+        $req = $client->getRequest();
+
+        $this->assertEquals('abc123', $resp->headers->get('Request-Id'));
+        $this->assertEquals('abc123', $req->headers->get('Request-Id'));
     }
 
     public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse()
@@ -33,8 +46,11 @@ class HttpTest extends TestCase
 
         $client->request('GET', '/');
         $resp = $client->getResponse();
+        $req = $client->getRequest();
 
-        $this->assertTrue($resp->headers->has('Request-Id'));
-        $this->assertNotEmpty($resp->headers->get('Request-Id'));
+        $id = $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId();
+        $this->assertNotEmpty($id);
+        $this->assertEquals($id, $resp->headers->get('Request-Id'));
+        $this->assertEquals($id, $req->headers->get('Request-Id'));
     }
 }

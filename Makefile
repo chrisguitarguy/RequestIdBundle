@@ -1,10 +1,13 @@
-.PHONY: test
+.PHONY: test unittest prepint inttest
 
 unittest:
 	php vendor/bin/phpunit --testsuite unit
 
-inttest:
+prepint:
+	rm -rf test/integration/app/tmp/*
+
+inttest: prepint
 	php vendor/bin/phpunit --testsuite integration
 
-test:
+test: prepint
 	php vendor/bin/phpunit
