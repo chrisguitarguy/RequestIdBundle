@@ -4,6 +4,7 @@
     "keywords": ["symfony", "request id"],
     "license": "MIT",
     "require": {
+        "php": ">=5.5",
         "symfony/framework-bundle": "~2.7",
         "ramsey/uuid": "~2.0"
     },
