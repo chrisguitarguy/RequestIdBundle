@@ -12,9 +12,10 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class HttpTest extends TestCase
+class HttpTest extends WebTestCase
 {
     public function testRequestThatAlreadyHasARequestIdDoesNotReplaceIt()
     {
@@ -75,6 +76,11 @@ class HttpTest extends TestCase
             $crawler->filter(sprintf('h1:contains("%s")', $id))->count(),
             'should have the request ID in the response HTML'
         );
+    }
+
+    protected static function getKernelClass()
+    {
+        return TestKernel::class;
     }
 
     private function getLogs($client)

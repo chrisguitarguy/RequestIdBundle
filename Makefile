@@ -3,10 +3,10 @@
 unittest:
 	php vendor/bin/phpunit --testsuite unit
 
-prepint:
+prepaccept:
 	rm -rf test/integration/app/tmp/*
 
-inttest: prepint
+accept: prepint
 	php vendor/bin/phpunit --testsuite integration
 
 test: prepint

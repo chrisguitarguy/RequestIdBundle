@@ -11,6 +11,6 @@
  */
 
 $loader = require __DIR__.'/../vendor/autoload.php';
-$loader->addPsr4('Chrisguitarguy\\RequestId\\', __DIR__.'/integration/');
+$loader->addPsr4('Chrisguitarguy\\RequestId\\', __DIR__.'/acceptance/');
 $loader->addPsr4('Chrisguitarguy\\RequestId\\', __DIR__.'/unit/');
-require __DIR__.'/integration/app/TestKernel.php';
+require __DIR__.'/acceptance/app/TestKernel.php';
