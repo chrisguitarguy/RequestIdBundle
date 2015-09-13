@@ -1,0 +1,33 @@
+parameters:
+    secret: dev
+    locale: ~
+
+framework:
+    test: ~
+    secret: "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: %kernel.debug%
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    fragments:       ~
+    http_method_override: true
+
+services:
+    log.formatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%level_name%% - %%extra.request_id%%] %%message%%"
+    log.memory_handler:
+        class: Chrisguitarguy\RequestId\MemoryHandler
+        calls:
+            - [setFormatter, ["@log.formatter"]]
+
+monolog:
+    handlers:
+        main:
+            type: service
+            id: log.memory_handler
