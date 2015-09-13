@@ -81,7 +81,7 @@ default generator creates version 4 UUIDs.
 On the way out out, the `Request-Id` header is set on the response as well using
 the value described above.
 
-The headers are configurable. See the [configuration](#Configuration) above.
+The headers are configurable. See the [configuration](#configuration) above.
 
 ## Monolog Integration
 
