@@ -40,6 +40,7 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
         $listenerDef = new Definition(RequestIdListener::class, [
             $config['request_header'],
             $config['response_header'],
+            $config['trust_request_header'],
             new Reference($storeId),
             new Reference($genId),
         ]);

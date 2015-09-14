@@ -47,6 +47,12 @@ chrisguitarguy_request_id:
     # if this is not set an ID will be generated and set at this header
     request_header: Request-Id
 
+    # Whether or not to trust the incoming request header. This is turned
+    # on by default. If true a value in the `Request-Id` header in the request
+    # will be used as the request ID for the rest of the request. If false
+    # those values are ignored.
+    trust_request_header: true
+
     # The header which the bundle will set the request ID to on
     # the response
     response_header: Request-Id

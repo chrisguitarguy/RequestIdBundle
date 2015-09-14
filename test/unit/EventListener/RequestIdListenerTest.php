@@ -101,6 +101,37 @@ class RequestIdListenerTest extends UnitTestCase
         $this->assertEquals('def234', $this->request->headers->get(self::HEADER));
     }
 
+    public function testListenerIgnoresIncomingRequestHeadersWhenTrustRequestIsFalse()
+    {
+        $this->dispatcher->removeSubscriber($this->listener);
+        $this->dispatcher->addSubscriber(new RequestIdListener(
+            self::HEADER,
+            self::HEADER,
+            false,
+            $this->idStorage,
+            $this->idGen
+        ));
+        $this->idGen->expects($this->once())
+            ->method('generate')
+            ->willReturn('def234');
+        $this->idStorage->expects($this->once())
+            ->method('getRequestId')
+            ->willReturn(null);
+        $this->idStorage->expects($this->once())
+            ->method('setRequestId')
+            ->with('def234');
+        $this->request->headers->set(self::HEADER, 'abc123');
+        $event = new GetResponseEvent(
+            $this->kernel,
+            $this->request,
+            HttpKernelInterface::MASTER_REQUEST
+        );
+
+        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+
+        $this->assertEquals('def234', $this->request->headers->get(self::HEADER));
+    }
+
     public function testListenerDoesNothingToResponseWithoutMasterRequest()
     {
         $this->idStorage->expects($this->never())
@@ -155,6 +186,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->listener = new RequestIdListener(
             self::HEADER,
             self::HEADER,
+            true,
             $this->idStorage,
             $this->idGen
         );

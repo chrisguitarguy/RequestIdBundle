@@ -41,6 +41,13 @@ final class RequestIdListener implements EventSubscriberInterface
     private $responseHeader;
 
     /**
+     * Trust the value from the request? Or generate?
+     *
+     * @var boolean
+     */
+    private $trustRequest;
+
+    /**
      * The request ID storage, used to store the ID from the request or a
      * newly generated ID.
      *
@@ -55,10 +62,11 @@ final class RequestIdListener implements EventSubscriberInterface
      */
     private $idGenerator;
 
-    public function __construct($reqHeader, $respHeader, RequestIdStorage $storage, RequestIdGenerator $generator)
+    public function __construct($reqHeader, $respHeader, $trustReq, RequestIdStorage $storage, RequestIdGenerator $generator)
     {
         $this->requestHeader = $reqHeader;
         $this->responseHeader = $reqHeader;
+        $this->trustRequest = $trustReq;
         $this->idStorage = $storage;
         $this->idGenerator = $generator;
     }
@@ -84,7 +92,7 @@ final class RequestIdListener implements EventSubscriberInterface
 
         // always give the incoming request priority. If it has the ID in
         // its headers already put that into our ID storage.
-        if ($id = $req->headers->get($this->requestHeader)) {
+        if ($this->trustRequest && ($id = $req->headers->get($this->requestHeader))) {
             return $this->idStorage->setRequestId($id);
         }
 
