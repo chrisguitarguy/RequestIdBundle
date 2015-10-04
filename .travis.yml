@@ -16,6 +16,6 @@ notification:
 
 install:
     - composer install --prefer-source
-    - if [ -z "$RAMSEY_UUID_VERSION" ]; then composer require ramsey/uuid "$RAMSEY_UUID_VERSION"; fi;
+    - if [ -n "$RAMSEY_UUID_VERSION" ]; then composer require ramsey/uuid "$RAMSEY_UUID_VERSION"; fi;
 
 script: make test
