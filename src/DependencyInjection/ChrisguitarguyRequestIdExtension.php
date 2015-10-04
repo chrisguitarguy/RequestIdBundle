@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Chrisguitarguy\RequestId\SimpleIdStorage;
 use Chrisguitarguy\RequestId\Uuid4IdGenerator;
+use Chrisguitarguy\RequestId\Generator\RhumsaaUuid4Generator;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
 use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
 use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
@@ -32,7 +33,7 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
     protected function loadInternal(array $config, ContainerBuilder $container)
     {
         $container->setDefinition('chrisguitarguy.requestid.storage', new Definition(SimpleIdStorage::class));
-        $container->setDefinition('chrisguitarguy.requestid.generator', new Definition(Uuid4IdGenerator::class));
+        $container->setDefinition('chrisguitarguy.requestid.generator', new Definition(RhumsaaUuid4Generator::class));
 
         $storeId = empty($config['storage_service']) ? 'chrisguitarguy.requestid.storage' : $config['storage_service'];
         $genId = empty($config['generator_service']) ? 'chrisguitarguy.requestid.generator' : $config['generator_service'];

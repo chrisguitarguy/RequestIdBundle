@@ -10,13 +10,20 @@
  * @license     http://opensource.org/licenses/MIT MIT
  */
 
-namespace Chrisguitarguy\RequestId;
+namespace Chrisguitarguy\RequestId\Generator;
 
-class Uuid4IdGeneratorTest extends UnitTestCase
+use Rhumsaa\Uuid\Uuid;
+use Chrisguitarguy\RequestId\UnitTestCase;
+
+class RhumsaaUuid4GeneratorTest extends UnitTestCase
 {
     public function testGenerateReturnsANewStringIdentifier()
     {
-        $s = new Uuid4IdGenerator();
+        if (!class_exists(Uuid::class)) {
+            return $this->markTestSkipped(sprintf('%s requires the %s class', __METHOD__, Uuid::class));
+        }
+
+        $s = new RhumsaaUuid4Generator();
 
         $id = $s->generate();
 
