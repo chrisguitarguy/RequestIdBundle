@@ -1,5 +1,6 @@
 /vendor
 /coverage
+/composer.lock
 
 *.pyc
 *.swp

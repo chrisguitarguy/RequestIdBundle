@@ -5,9 +5,17 @@ php:
   - 5.5
   - 7
 
+env:
+    matrix:
+        - RAMSEY_UUID_VERSION=""
+        - RAMSEY_UUID_VERSION="~2.0"
+
+
 notification:
     email: false
 
-install: composer install --prefer-source
+install:
+    - composer install --prefer-source
+    - if [ -n "$RAMSEY_UUID_VERSION" ]; then composer require ramsey/uuid "$RAMSEY_UUID_VERSION"; fi;
 
 script: make test

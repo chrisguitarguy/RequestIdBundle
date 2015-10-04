@@ -10,16 +10,17 @@
  * @license     http://opensource.org/licenses/MIT MIT
  */
 
-namespace Chrisguitarguy\RequestId;
+namespace Chrisguitarguy\RequestId\Generator;
 
 use Rhumsaa\Uuid\Uuid;
+use Chrisguitarguy\RequestId\RequestIdGenerator;
 
 /**
- * Use v4 UUID's for request IDs.
+ * Uses version ~2.0 of `ramsey/uuid` to generator v4 UUIDs for request ids.
  *
  * @since   1.0
  */
-final class Uuid4IdGenerator implements RequestIdGenerator
+final class RhumsaaUuid4Generator implements RequestIdGenerator
 {
     /**
      * {@inheritdoc}
