@@ -13,7 +13,6 @@
 namespace Chrisguitarguy\RequestId\DependencyInjection;
 
 use Ramsey\Uuid\UuidFactory;
-use Ramsey\Uuid\UuidFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -21,7 +20,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Chrisguitarguy\RequestId\SimpleIdStorage;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\Generator\RamseyUuid4Generator;
-use Chrisguitarguy\RequestId\Generator\RhumsaaUuid4Generator;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
 use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
 use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
@@ -36,8 +34,7 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
     protected function loadInternal(array $config, ContainerBuilder $container)
     {
         $container->setDefinition('chrisguitarguy.requestid.storage', new Definition(SimpleIdStorage::class));
-        $container->setDefinition('chrisguitarguy.requestid.generator', new Definition(RequestIdGenerator::class))
-            ->setFactory([__CLASS__, 'createGenerator']);
+        $container->setDefinition('chrisguitarguy.requestid.generator', new Definition(RamseyUuid4Generator::class));
 
         $storeId = empty($config['storage_service']) ? 'chrisguitarguy.requestid.storage' : $config['storage_service'];
         $genId = empty($config['generator_service']) ? 'chrisguitarguy.requestid.generator' : $config['generator_service'];
@@ -67,14 +64,5 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
             $twigDef->addTag('twig.extension');
             $container->setDefinition('chrisguitarguy.requestid.twig_extension', $twigDef);
         }
-    }
-
-    public static function createGenerator()
-    {
-        if (interface_exists(UuidFactoryInterface::class)) {
-            return new RamseyUuid4Generator();
-        }
-
-        return new RhumsaaUuid4Generator();
     }
 }
