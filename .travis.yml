@@ -7,15 +7,14 @@ php:
 
 env:
     matrix:
-        - RAMSEY_UUID_VERSION=""
-        - RAMSEY_UUID_VERSION="~2.0"
+        - COMPOSER_FLAGS=""
+        - COMPOSER_FLAGS="--prefer-lowest"
 
 
 notification:
     email: false
 
 install:
-    - composer install --prefer-source
-    - if [ -n "$RAMSEY_UUID_VERSION" ]; then composer require ramsey/uuid "$RAMSEY_UUID_VERSION"; fi;
+    - composer install $COMPOSER_FLAGS
 
 script: make test
