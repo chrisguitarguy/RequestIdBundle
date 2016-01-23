@@ -18,6 +18,7 @@ notifications:
     email: false
 
 install:
+    - composer self-update
     - composer update $COMPOSER_FLAGS
 
 script: make test
