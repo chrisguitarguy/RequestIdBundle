@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -32,7 +33,7 @@ final class RequestIdProcessor
         $this->idStorage = $storage;
     }
 
-    public function __invoke(array $record)
+    public function __invoke(array $record) : array
     {
         if ($id = $this->idStorage->getRequestId()) {
             $record['extra']['request_id'] = $id;

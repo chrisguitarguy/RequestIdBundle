@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -20,7 +21,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder() : TreeBuilder
     {
         $tree = new TreeBuilder();
         $root = $tree->root('chrisguitarguy_request_id');

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -26,13 +27,12 @@ interface RequestIdStorage
      *
      * @return  string|null Null if the request does not have an identifier
      */
-    public function getRequestId();
+    public function getRequestId() : ?string;
 
     /**
      * Set the request ID.
      *
      * @param   string $id The ID to set
-     * @return  void
      */
-    public function setRequestId($id);
+    public function setRequestId(string $id) : void;
 }

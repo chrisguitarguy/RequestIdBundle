@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -36,7 +37,7 @@ final class RamseyUuid4Generator implements RequestIdGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate()
+    public function generate() : string
     {
         return (string) $this->factory->uuid4();
     }

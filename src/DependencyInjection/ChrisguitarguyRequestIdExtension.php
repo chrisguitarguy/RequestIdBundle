@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -32,7 +33,7 @@ use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
  */
 final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 {
-    protected function loadInternal(array $config, ContainerBuilder $container)
+    protected function loadInternal(array $config, ContainerBuilder $container) : void
     {
         $container->register(SimpleIdStorage::class);
         $container->register(RamseyUuid4Generator::class);
