@@ -181,8 +181,8 @@ class RequestIdListenerTest extends UnitTestCase
 
     protected function setUp()
     {
-        $this->idStorage = $this->getMock(RequestIdStorage::class);
-        $this->idGen = $this->getMock(RequestIdGenerator::class);
+        $this->idStorage = $this->createMock(RequestIdStorage::class);
+        $this->idGen = $this->createMock(RequestIdGenerator::class);
         $this->listener = new RequestIdListener(
             self::HEADER,
             self::HEADER,
@@ -194,7 +194,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->dispatcher->addSubscriber($this->listener);
         $this->request = Request::create('/');
         $this->response = new Response('Hello, World');
-        $this->kernel = $this->getMock(HttpKernelInterface::class);
+        $this->kernel = $this->createMock(HttpKernelInterface::class);
     }
 
     private function willNotGenerate()
