@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 3.0.0
+
+New Features:
+
+- Support for Symfony 4.X!
+
+BC Breaks:
+
+- Removed support for Symfony 2.X
+- Minimum Symfony 3 version is now 3.4 (the latest LTS)
+- DI services have been reworked
+    - All services are named after their class names
+    - Only the RequestIdStorage and RequestIdGenerator services are public
+
+
 ## 2.0.0
 
 BC Breaks:
