@@ -36,7 +36,7 @@ final class SimpleIdStorage implements RequestIdStorage
     /**
      * {@inheritdoc}
      */
-    public function setRequestId(string $id) : void
+    public function setRequestId(?string $id) : void
     {
         $this->requestId = $id;
     }

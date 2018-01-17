@@ -34,5 +34,5 @@ interface RequestIdStorage
      *
      * @param   string $id The ID to set
      */
-    public function setRequestId(string $id) : void;
+    public function setRequestId(?string $id) : void;
 }
