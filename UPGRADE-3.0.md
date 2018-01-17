@@ -27,3 +27,43 @@ configuration are also available at the namespaced `RequestIdStorage` and
 `RequestIdGenerator` aliases as well.
 
 These change should be autowiring work with this bundle's services.
+
+## Stricter Typing
+
+The `RequestIdGenerator` and `RequestIdStorage` interfaces are now more strict.
+
+#### `RequestIdGenerator`
+
+```diff
+use Chrisguitarguy\RequestId\RequestIdGenerator;
+
+class SomeGenerator implements RequestIdGenerator
+{
+-   public function generate()
++   public function generate() : string
+    {
+        // ...
+    }
+}
+```
+
+#### `RequestIdStorage`
+
+```diff
+use Chrisguitarguy\RequestId\RequestIdStorage;
+
+class SomeStorage implements RequestIdStorage
+{
+-   public function getRequestId()
++   public function getRequestId() : ?string
+    {
+        // ...
+    }
+
+-   public function setRequestId($id)
++   public function setRequestId(?string $id) : void
+    {
+        // ...
+    }
+}
+```
