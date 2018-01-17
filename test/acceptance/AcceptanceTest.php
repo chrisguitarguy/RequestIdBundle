@@ -78,6 +78,26 @@ class HttpTest extends WebTestCase
         );
     }
 
+    public static function publicServices()
+    {
+        return [
+            [RequestIdStorage::class],
+            [RequestIdGenerator::class],
+        ];
+    }
+
+    /**
+     * @dataProvider publicServices
+     */
+    public function testExpectedServicesArePubliclyAvaiableFromTheContainer(string $class)
+    {
+        $client = $this->createClient();
+
+        $service = $client->getContainer()->get($class);
+
+        $this->assertInstanceOf($class, $service);
+    }
+
     protected static function getKernelClass()
     {
         return TestKernel::class;
