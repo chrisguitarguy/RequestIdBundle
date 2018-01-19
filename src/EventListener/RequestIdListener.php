@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -74,7 +75,7 @@ final class RequestIdListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents() : array
     {
         return [
             KernelEvents::REQUEST   => ['onRequest', 100],
@@ -82,7 +83,7 @@ final class RequestIdListener implements EventSubscriberInterface
         ];
     }
 
-    public function onRequest(GetResponseEvent $event)
+    public function onRequest(GetResponseEvent $event) : void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -93,13 +94,15 @@ final class RequestIdListener implements EventSubscriberInterface
         // always give the incoming request priority. If it has the ID in
         // its headers already put that into our ID storage.
         if ($this->trustRequest && ($id = $req->headers->get($this->requestHeader))) {
-            return $this->idStorage->setRequestId($id);
+            $this->idStorage->setRequestId($id);
+            return;
         }
 
         // similarly, if the request ID storage already has an ID set we
         // don't need to do anything other than put it into the request headers
         if ($id = $this->idStorage->getRequestId()) {
-            return $req->headers->set($this->requestHeader, $id);
+            $req->headers->set($this->requestHeader, $id);
+            return;
         }
 
         $id = $this->idGenerator->generate();
@@ -107,7 +110,7 @@ final class RequestIdListener implements EventSubscriberInterface
         $this->idStorage->setRequestId($id);
     }
 
-    public function onResponse(FilterResponseEvent $event)
+    public function onResponse(FilterResponseEvent $event) : void
     {
         if (!$event->isMasterRequest()) {
             return;

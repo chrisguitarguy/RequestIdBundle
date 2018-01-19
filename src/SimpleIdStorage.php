@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -27,7 +28,7 @@ final class SimpleIdStorage implements RequestIdStorage
     /**
      * {@inheritdoc}
      */
-    public function getRequestId()
+    public function getRequestId() : ?string
     {
         return $this->requestId;
     }
@@ -35,7 +36,7 @@ final class SimpleIdStorage implements RequestIdStorage
     /**
      * {@inheritdoc}
      */
-    public function setRequestId($id)
+    public function setRequestId(?string $id) : void
     {
         $this->requestId = $id;
     }

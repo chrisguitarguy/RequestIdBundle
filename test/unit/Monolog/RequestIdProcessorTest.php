@@ -40,7 +40,7 @@ class RequestIdProcessorTest extends UnitTestCase
 
     protected function setUp()
     {
-        $this->idStorage = $this->getMock(RequestIdStorage::class);
+        $this->idStorage = $this->createMock(RequestIdStorage::class);
         $this->processor = new RequestIdProcessor($this->idStorage);
     }
 

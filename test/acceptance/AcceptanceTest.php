@@ -28,7 +28,7 @@ class HttpTest extends WebTestCase
 
         $this->assertSuccessfulResponse($resp);
         $this->assertEquals('testId', $resp->headers->get('Request-Id'));
-        $this->assertEquals('testId', $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId());
+        $this->assertEquals('testId', $client->getContainer()->get(RequestIdStorage::class)->getRequestId());
         $this->assertLogsHaveRequestId($client, 'testId');
         $this->assertGreaterThan(
             0,
@@ -40,7 +40,7 @@ class HttpTest extends WebTestCase
     public function testAlreadySetRequestIdUsesValueFromStorage()
     {
         $client = $this->createClient();
-        $client->getContainer()->get('chrisguitarguy.requestid.storage')->setRequestId('abc123');
+        $client->getContainer()->get(RequestIdStorage::class)->setRequestId('abc123');
 
         $crawler = $client->request('GET', '/');
         $resp = $client->getResponse();
@@ -66,7 +66,7 @@ class HttpTest extends WebTestCase
         $req = $client->getRequest();
 
         $this->assertSuccessfulResponse($resp);
-        $id = $client->getContainer()->get('chrisguitarguy.requestid.storage')->getRequestId();
+        $id = $client->getContainer()->get(RequestIdStorage::class)->getRequestId();
         $this->assertNotEmpty($id);
         $this->assertEquals($id, $resp->headers->get('Request-Id'));
         $this->assertEquals($id, $req->headers->get('Request-Id'));
@@ -76,6 +76,26 @@ class HttpTest extends WebTestCase
             $crawler->filter(sprintf('h1:contains("%s")', $id))->count(),
             'should have the request ID in the response HTML'
         );
+    }
+
+    public static function publicServices()
+    {
+        return [
+            [RequestIdStorage::class],
+            [RequestIdGenerator::class],
+        ];
+    }
+
+    /**
+     * @dataProvider publicServices
+     */
+    public function testExpectedServicesArePubliclyAvaiableFromTheContainer(string $class)
+    {
+        $client = $this->createClient();
+
+        $service = $client->getContainer()->get($class);
+
+        $this->assertInstanceOf($class, $service);
     }
 
     protected static function getKernelClass()

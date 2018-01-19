@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -18,6 +19,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Chrisguitarguy\RequestId\SimpleIdStorage;
+use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\Generator\RamseyUuid4Generator;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
@@ -31,38 +33,44 @@ use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
  */
 final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 {
-    protected function loadInternal(array $config, ContainerBuilder $container)
+    protected function loadInternal(array $config, ContainerBuilder $container) : void
     {
-        $container->setDefinition('chrisguitarguy.requestid.storage', new Definition(SimpleIdStorage::class));
-        $container->setDefinition('chrisguitarguy.requestid.generator', new Definition(RamseyUuid4Generator::class));
+        $container->register(SimpleIdStorage::class)
+            ->setPublic(false);
+        $container->register(RamseyUuid4Generator::class)
+            ->setPublic(false);
 
-        $storeId = empty($config['storage_service']) ? 'chrisguitarguy.requestid.storage' : $config['storage_service'];
-        $genId = empty($config['generator_service']) ? 'chrisguitarguy.requestid.generator' : $config['generator_service'];
+        $storeId = empty($config['storage_service']) ? SimpleIdStorage::class : $config['storage_service'];
+        $genId = empty($config['generator_service']) ? RamseyUuid4Generator::class : $config['generator_service'];
 
-        $listenerDef = new Definition(RequestIdListener::class, [
-            $config['request_header'],
-            $config['response_header'],
-            $config['trust_request_header'],
-            new Reference($storeId),
-            new Reference($genId),
-        ]);
-        $listenerDef->addTag('kernel.event_subscriber');
-        $container->setDefinition('chrisguitarguy.requestid.listener', $listenerDef);
+        $container->setAlias(RequestIdStorage::class, $storeId)
+            ->setPublic(true);
+        $container->setAlias(RequestIdGenerator::class, $genId)
+            ->setPublic(true);
+
+        $container->register(RequestIdListener::class)
+            ->setArguments([
+                $config['request_header'],
+                $config['response_header'],
+                $config['trust_request_header'],
+                new Reference($storeId),
+                new Reference($genId),
+            ])
+            ->setPublic(false)
+            ->addTag('kernel.event_subscriber');
 
         if (!empty($config['enable_monolog'])) {
-            $logDef = new Definition(RequestIdProcessor::class, [
-                new Reference($storeId),
-            ]);
-            $logDef->addTag('monolog.processor');
-            $container->setDefinition('chrisguitarguy.requestid.monolog_processor', $logDef);
+            $container->register(RequestIdProcessor::class)
+                ->addArgument(new Reference($storeId))
+                ->setPublic(false)
+                ->addTag('monolog.processor');
         }
 
         if (class_exists('Twig_Extension') && !empty($config['enable_twig'])) {
-            $twigDef = new Definition(RequestIdExtension::class, [
-                new Reference($storeId),
-            ]);
-            $twigDef->addTag('twig.extension');
-            $container->setDefinition('chrisguitarguy.requestid.twig_extension', $twigDef);
+            $container->register(RequestIdExtension::class)
+                ->addArgument(new Reference($storeId))
+                ->setPublic(false)
+                ->addTag('twig.extension');
         }
     }
 }

@@ -22,4 +22,14 @@ class SimpleIdStorageTest extends UnitTestCase
         $s->setRequestId('test');
         $this->assertEquals('test', $s->getRequestId());
     }
+
+    public function testNullCanBePassedToSetRequestIdToClearIt()
+    {
+        $s = new SimpleIdStorage();
+        $s->setRequestId('test');
+
+        $s->setRequestId(null);
+
+        $this->assertNull($s->getRequestId());
+    }
 }
