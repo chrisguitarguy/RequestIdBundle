@@ -2,4 +2,4 @@ main:
     path: /
     defaults:
         _controller: FrameworkBundle:Template:template
-        template: index.html.twig
+        template: "@requestid/index.html.twig"
