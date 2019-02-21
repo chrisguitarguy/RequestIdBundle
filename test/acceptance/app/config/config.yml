@@ -12,6 +12,11 @@ framework:
         engines: ['twig']
     default_locale:  "%locale%"
 
+twig:
+  strict_variables: "%kernel.debug%"
+  paths:
+    "%kernel.root_dir%/templates": requestid
+
 services:
     log.formatter:
         class: Monolog\Formatter\LineFormatter
