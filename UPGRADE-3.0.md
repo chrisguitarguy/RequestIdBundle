@@ -3,9 +3,9 @@
 Version 2 and 3 are *functionally the same*, the only new things brought to 3.X
 are support for symfony 4.X and bumped dependency requirements.
 
-## PHP Version Requirement Bumped to 7.1+
+## PHP Version Requirement Bumped to 7.2+
 
-Stick with version 2.X should PHP 5 support still be require.
+Stick with version 2.X should PHP 5 support still be required.
 
 ## Dropped Support for Symfony 2.X
 
