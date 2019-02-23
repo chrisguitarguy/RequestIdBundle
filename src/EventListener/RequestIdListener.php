@@ -79,7 +79,7 @@ final class RequestIdListener implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST   => ['onRequest', 100],
-            KernelEvents::RESPONSE  => ['onResponse', -100],
+            KernelEvents::RESPONSE  => ['onResponse', -99],
         ];
     }
 
