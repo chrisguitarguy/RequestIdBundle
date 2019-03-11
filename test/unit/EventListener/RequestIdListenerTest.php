@@ -25,7 +25,8 @@ use Chrisguitarguy\RequestId\UnitTestCase;
 
 class RequestIdListenerTest extends UnitTestCase
 {
-    const HEADER = 'Request-Id';
+    const REQUEST_HEADER = 'Request-Id';
+    const RESPONSE_HEADER = 'Response-Id';
 
     private $idStorage, $idGen, $listener, $dispatcher, $request, $response, $kernel;
 
@@ -44,7 +45,7 @@ class RequestIdListenerTest extends UnitTestCase
 
     public function testListenerSetsTheRequestIdToStorageWhenFoundInRequestHeaders()
     {
-        $this->request->headers->set(self::HEADER, 'testId');
+        $this->request->headers->set(self::REQUEST_HEADER, 'testId');
         $this->willNotGenerate();
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
@@ -76,7 +77,7 @@ class RequestIdListenerTest extends UnitTestCase
 
         $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
 
-        $this->assertEquals('abc123', $this->request->headers->get(self::HEADER));
+        $this->assertEquals('abc123', $this->request->headers->get(self::REQUEST_HEADER));
     }
 
     public function testListenerGenerateNewIdAndSetsItOnRequestAndStorageWhenNoIdIsFound()
@@ -98,15 +99,15 @@ class RequestIdListenerTest extends UnitTestCase
 
         $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
 
-        $this->assertEquals('def234', $this->request->headers->get(self::HEADER));
+        $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
 
     public function testListenerIgnoresIncomingRequestHeadersWhenTrustRequestIsFalse()
     {
         $this->dispatcher->removeSubscriber($this->listener);
         $this->dispatcher->addSubscriber(new RequestIdListener(
-            self::HEADER,
-            self::HEADER,
+            self::REQUEST_HEADER,
+            self::REQUEST_HEADER,
             false,
             $this->idStorage,
             $this->idGen
@@ -120,7 +121,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->once())
             ->method('setRequestId')
             ->with('def234');
-        $this->request->headers->set(self::HEADER, 'abc123');
+        $this->request->headers->set(self::REQUEST_HEADER, 'abc123');
         $event = new GetResponseEvent(
             $this->kernel,
             $this->request,
@@ -129,7 +130,7 @@ class RequestIdListenerTest extends UnitTestCase
 
         $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
 
-        $this->assertEquals('def234', $this->request->headers->get(self::HEADER));
+        $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
 
     public function testListenerDoesNothingToResponseWithoutMasterRequest()
@@ -144,7 +145,7 @@ class RequestIdListenerTest extends UnitTestCase
             $this->response
         ));
 
-        $this->assertFalse($this->response->headers->has(self::HEADER));
+        $this->assertFalse($this->response->headers->has(self::REQUEST_HEADER));
     }
 
     public function testRequestWithoutIdInStorageDoesNotSetHeaderOnResponse()
@@ -160,7 +161,7 @@ class RequestIdListenerTest extends UnitTestCase
             $this->response
         ));
 
-        $this->assertFalse($this->response->headers->has(self::HEADER));
+        $this->assertFalse($this->response->headers->has(self::REQUEST_HEADER));
     }
 
     public function testRequestWithIdInStorageSetsIdOnResponse()
@@ -176,7 +177,7 @@ class RequestIdListenerTest extends UnitTestCase
             $this->response
         ));
 
-        $this->assertEquals('ghi345', $this->response->headers->get(self::HEADER));
+        $this->assertEquals('ghi345', $this->response->headers->get(self::RESPONSE_HEADER));
     }
 
     protected function setUp()
@@ -184,8 +185,8 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage = $this->createMock(RequestIdStorage::class);
         $this->idGen = $this->createMock(RequestIdGenerator::class);
         $this->listener = new RequestIdListener(
-            self::HEADER,
-            self::HEADER,
+            self::REQUEST_HEADER,
+            self::RESPONSE_HEADER,
             true,
             $this->idStorage,
             $this->idGen
