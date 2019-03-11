@@ -66,7 +66,7 @@ final class RequestIdListener implements EventSubscriberInterface
     public function __construct($reqHeader, $respHeader, $trustReq, RequestIdStorage $storage, RequestIdGenerator $generator)
     {
         $this->requestHeader = $reqHeader;
-        $this->responseHeader = $reqHeader;
+        $this->responseHeader = $respHeader;
         $this->trustRequest = $trustReq;
         $this->idStorage = $storage;
         $this->idGenerator = $generator;
