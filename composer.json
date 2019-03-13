@@ -3,6 +3,7 @@
     "description": "Add request IDs to to your Symfony requests.",
     "keywords": ["symfony", "request id"],
     "license": "MIT",
+    "type": "symfony-bundle",
     "require": {
         "php": "~7.2",
         "symfony/framework-bundle": "~3.4|~4.0",
