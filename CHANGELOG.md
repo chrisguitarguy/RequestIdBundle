@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 3.0.1
+
+Bug Fixes
+
+- Increased the priority of the response listener so it runs before Symfony's
+  profiler.
+- The bundle now actually uses the configured response header.
+
 ## 3.0.0
 
 New Features:
