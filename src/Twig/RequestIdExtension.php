@@ -14,13 +14,15 @@
 namespace Chrisguitarguy\RequestId\Twig;
 
 use Chrisguitarguy\RequestId\RequestIdStorage;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Add the request ID to twig as a function.
  *
  * @since   1.0
  */
-final class RequestIdExtension extends \Twig_Extension
+final class RequestIdExtension extends AbstractExtension
 {
     /**
      * @var RequestIdStorage
@@ -38,7 +40,7 @@ final class RequestIdExtension extends \Twig_Extension
     public function getFunctions() : array
     {
         return [
-            new \Twig_SimpleFunction('request_id', [$this->idStorage, 'getRequestId']),
+            new TwigFunction('request_id', [$this->idStorage, 'getRequestId']),
         ];
     }
 

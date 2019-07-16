@@ -13,6 +13,8 @@
 namespace Chrisguitarguy\RequestId\Twig;
 
 use Chrisguitarguy\RequestId\SimpleIdStorage;
+use Twig\Loader\ArrayLoader;
+use Twig\Environment;
 
 class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
 {
@@ -31,10 +33,10 @@ class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
 
     public function setUp()
     {
-        $loader = new \Twig_Loader_Array([
+        $loader = new ArrayLoader([
             'test' => self::TEMPLATE,
         ]);
-        $this->env = new \Twig_Environment($loader);
+        $this->env = new Environment($loader);
         $this->storage = new SimpleIdStorage();
         $this->env->addExtension(new RequestIdExtension($this->storage));
     }
