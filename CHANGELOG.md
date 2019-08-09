@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 3.0.2
+
+Bug Fixes
+
+- Fixed deprecation notices from Twig
+- Fixed deprecation notices from Symfony in tests
+
 ## 3.0.1
 
 Bug Fixes
