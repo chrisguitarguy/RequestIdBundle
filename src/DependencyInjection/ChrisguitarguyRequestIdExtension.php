@@ -66,7 +66,7 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
                 ->addTag('monolog.processor');
         }
 
-        if (class_exists('Twig_Extension') && !empty($config['enable_twig'])) {
+        if (class_exists('Twig\Extension\AbstractExtension') && !empty($config['enable_twig'])) {
             $container->register(RequestIdExtension::class)
                 ->addArgument(new Reference($storeId))
                 ->setPublic(false)

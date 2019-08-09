@@ -8,8 +8,6 @@ framework:
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: "%kernel.debug%"
-    templating:
-        engines: ['twig']
     default_locale:  "%locale%"
 
 twig:
