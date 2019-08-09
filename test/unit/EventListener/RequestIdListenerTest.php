@@ -12,6 +12,7 @@
 
 namespace Chrisguitarguy\RequestId\EventListener;
 
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as Symfony43Dispatcher;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
@@ -40,7 +42,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
 
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $this->dispatchEvent(KernelEvents::REQUEST, $event);
     }
 
     public function testListenerSetsTheRequestIdToStorageWhenFoundInRequestHeaders()
@@ -58,7 +60,7 @@ class RequestIdListenerTest extends UnitTestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $this->dispatchEvent(KernelEvents::REQUEST, $event);
     }
 
     public function testListenerSetsTheIdOnRequestWhenItsFoundInStorage()
@@ -75,7 +77,7 @@ class RequestIdListenerTest extends UnitTestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $this->dispatchEvent(KernelEvents::REQUEST, $event);
 
         $this->assertEquals('abc123', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -97,7 +99,7 @@ class RequestIdListenerTest extends UnitTestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $this->dispatchEvent(KernelEvents::REQUEST, $event);
 
         $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -128,7 +130,7 @@ class RequestIdListenerTest extends UnitTestCase
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $this->dispatchEvent(KernelEvents::REQUEST, $event);
 
         $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -138,7 +140,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
 
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, new FilterResponseEvent(
+        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::SUB_REQUEST,
@@ -154,7 +156,7 @@ class RequestIdListenerTest extends UnitTestCase
             ->method('getRequestId')
             ->willReturn(null);
 
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, new FilterResponseEvent(
+        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
@@ -170,7 +172,7 @@ class RequestIdListenerTest extends UnitTestCase
             ->method('getRequestId')
             ->willReturn('ghi345');
 
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, new FilterResponseEvent(
+        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
@@ -202,5 +204,14 @@ class RequestIdListenerTest extends UnitTestCase
     {
         $this->idGen->expects($this->never())
             ->method('generate');
+    }
+
+    private function dispatchEvent(string $eventName, Event $event) : void
+    {
+        if ($this->dispatcher instanceof Symfony43Dispatcher) {
+            $this->dispatcher->dispatch($event, $eventName);
+        } else {
+            $this->dispatcher->dispatch($eventName, $event);
+        }
     }
 }
