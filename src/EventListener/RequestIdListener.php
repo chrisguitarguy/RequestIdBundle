@@ -14,9 +14,9 @@
 namespace Chrisguitarguy\RequestId\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 
@@ -83,7 +83,7 @@ final class RequestIdListener implements EventSubscriberInterface
         ];
     }
 
-    public function onRequest(GetResponseEvent $event) : void
+    public function onRequest(RequestEvent $event) : void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -110,7 +110,7 @@ final class RequestIdListener implements EventSubscriberInterface
         $this->idStorage->setRequestId($id);
     }
 
-    public function onResponse(FilterResponseEvent $event) : void
+    public function onResponse(ResponseEvent $event) : void
     {
         if (!$event->isMasterRequest()) {
             return;

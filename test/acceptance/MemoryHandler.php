@@ -22,7 +22,7 @@ final class MemoryHandler extends AbstractProcessingHandler implements \Countabl
     /**
      * {@inheritdoc}
      */
-    protected function write(array $record)
+    protected function write(array $record): void
     {
         $this->logs[] = (string) $record['formatted'];
     }

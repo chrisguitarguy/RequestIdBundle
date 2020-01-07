@@ -23,16 +23,9 @@ final class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder() : TreeBuilder
     {
-        // compat: symfony < 4.1
-        if (method_exists(TreeBuilder::class, 'getRootNode')) {
-            $tree = new TreeBuilder('chrisguitarguy_request_id');
-            $root = $tree->getRootNode();
-        } else {
-            $tree = new TreeBuilder();
-            $root = $tree->root('chrisguitarguy_request_id');
-        }
+        $tree = new TreeBuilder('chrisguitarguy_request_id');
 
-        $root
+        $tree->getRootNode()
             ->children()
             ->scalarNode('request_header')
                 ->cannotBeEmpty()
