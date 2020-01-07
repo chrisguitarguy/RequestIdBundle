@@ -12,18 +12,17 @@
 
 namespace Chrisguitarguy\RequestId\EventListener;
 
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface as Symfony43Dispatcher;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class RequestIdListenerTest extends UnitTestCase
 {
@@ -34,7 +33,7 @@ class RequestIdListenerTest extends UnitTestCase
 
     public function testNonMasterRequestsDoNothingOnRequest()
     {
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::SUB_REQUEST
@@ -42,7 +41,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
 
-        $this->dispatchEvent(KernelEvents::REQUEST, $event);
+        $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
     }
 
     public function testListenerSetsTheRequestIdToStorageWhenFoundInRequestHeaders()
@@ -54,13 +53,13 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->once())
             ->method('setRequestId')
             ->with('testId');
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatchEvent(KernelEvents::REQUEST, $event);
+        $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
     }
 
     public function testListenerSetsTheIdOnRequestWhenItsFoundInStorage()
@@ -71,13 +70,13 @@ class RequestIdListenerTest extends UnitTestCase
             ->willReturn('abc123');
         $this->idStorage->expects($this->never())
             ->method('setRequestId');
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatchEvent(KernelEvents::REQUEST, $event);
+        $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
 
         $this->assertEquals('abc123', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -93,13 +92,13 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->once())
             ->method('setRequestId')
             ->with('def234');
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatchEvent(KernelEvents::REQUEST, $event);
+        $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
 
         $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -107,13 +106,15 @@ class RequestIdListenerTest extends UnitTestCase
     public function testListenerIgnoresIncomingRequestHeadersWhenTrustRequestIsFalse()
     {
         $this->dispatcher->removeSubscriber($this->listener);
-        $this->dispatcher->addSubscriber(new RequestIdListener(
-            self::REQUEST_HEADER,
-            self::REQUEST_HEADER,
-            false,
-            $this->idStorage,
-            $this->idGen
-        ));
+        $this->dispatcher->addSubscriber(
+            new RequestIdListener(
+                self::REQUEST_HEADER,
+                self::REQUEST_HEADER,
+                false,
+                $this->idStorage,
+                $this->idGen
+            )
+        );
         $this->idGen->expects($this->once())
             ->method('generate')
             ->willReturn('def234');
@@ -124,13 +125,13 @@ class RequestIdListenerTest extends UnitTestCase
             ->method('setRequestId')
             ->with('def234');
         $this->request->headers->set(self::REQUEST_HEADER, 'abc123');
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $this->request,
             HttpKernelInterface::MASTER_REQUEST
         );
 
-        $this->dispatchEvent(KernelEvents::REQUEST, $event);
+        $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
 
         $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
@@ -140,12 +141,15 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
 
-        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
-            $this->kernel,
-            $this->request,
-            HttpKernelInterface::SUB_REQUEST,
-            $this->response
-        ));
+        $this->dispatcher->dispatch(
+            new ResponseEvent(
+                $this->kernel,
+                $this->request,
+                HttpKernelInterface::SUB_REQUEST,
+                $this->response
+            ),
+            KernelEvents::RESPONSE
+        );
 
         $this->assertFalse($this->response->headers->has(self::REQUEST_HEADER));
     }
@@ -156,12 +160,15 @@ class RequestIdListenerTest extends UnitTestCase
             ->method('getRequestId')
             ->willReturn(null);
 
-        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
-            $this->kernel,
-            $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
-            $this->response
-        ));
+        $this->dispatcher->dispatch(
+            new ResponseEvent(
+                $this->kernel,
+                $this->request,
+                HttpKernelInterface::MASTER_REQUEST,
+                $this->response
+            ),
+            KernelEvents::RESPONSE
+        );
 
         $this->assertFalse($this->response->headers->has(self::REQUEST_HEADER));
     }
@@ -172,12 +179,15 @@ class RequestIdListenerTest extends UnitTestCase
             ->method('getRequestId')
             ->willReturn('ghi345');
 
-        $this->dispatchEvent(KernelEvents::RESPONSE, new FilterResponseEvent(
-            $this->kernel,
-            $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
-            $this->response
-        ));
+        $this->dispatcher->dispatch(
+            new ResponseEvent(
+                $this->kernel,
+                $this->request,
+                HttpKernelInterface::MASTER_REQUEST,
+                $this->response
+            ),
+            KernelEvents::RESPONSE
+        );
 
         $this->assertEquals('ghi345', $this->response->headers->get(self::RESPONSE_HEADER));
     }
@@ -204,14 +214,5 @@ class RequestIdListenerTest extends UnitTestCase
     {
         $this->idGen->expects($this->never())
             ->method('generate');
-    }
-
-    private function dispatchEvent(string $eventName, Event $event) : void
-    {
-        if ($this->dispatcher instanceof Symfony43Dispatcher) {
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            $this->dispatcher->dispatch($eventName, $event);
-        }
     }
 }

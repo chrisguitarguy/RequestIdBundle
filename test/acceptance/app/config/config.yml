@@ -6,14 +6,14 @@ framework:
     test: ~
     secret: "%secret%"
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: "%kernel.project_dir%/config/routing.yml"
         strict_requirements: "%kernel.debug%"
     default_locale:  "%locale%"
 
 twig:
   strict_variables: "%kernel.debug%"
   paths:
-    "%kernel.root_dir%/templates": requestid
+    "%kernel.project_dir%/templates": requestid
 
 services:
     log.formatter:

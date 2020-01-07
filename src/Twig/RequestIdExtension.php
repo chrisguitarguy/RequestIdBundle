@@ -43,12 +43,4 @@ final class RequestIdExtension extends AbstractExtension
             new TwigFunction('request_id', [$this->idStorage, 'getRequestId']),
         ];
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName() : string
-    {
-        return 'chirsguitarguy_request_id';
-    }
 }

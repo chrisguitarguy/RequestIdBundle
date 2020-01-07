@@ -23,7 +23,7 @@ final class TestKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir()."/config/config.yml");
+        $loader->load($this->getProjectDir()."/config/config.yml");
     }
 
     public function getLogDir()
@@ -36,7 +36,7 @@ final class TestKernel extends Kernel
         return __DIR__.'/tmp';
     }
 
-    public function getRootDir()
+    public function getProjectDir()
     {
         return __DIR__;
     }

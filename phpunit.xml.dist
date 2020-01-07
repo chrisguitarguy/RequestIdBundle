@@ -10,6 +10,10 @@
          stopOnFailure="false"
          bootstrap="test/bootstrap.php">
 
+    <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0&amp;max[direct]=0"/>
+    </php>
+
     <testsuites>
         <testsuite name="integration">
             <directory suffix="Test.php">test/acceptance/</directory>
