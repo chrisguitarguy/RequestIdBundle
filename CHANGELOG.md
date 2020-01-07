@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.0.0
+
+- Symfony 3.4 is no longer supported
+- Symfony 4.4 and 5.X are now required
+
 ## 3.0.2
 
 Bug Fixes
