@@ -117,7 +117,7 @@ monolog:
 
 ## Twig Integration
 
-**Important**: Twig ^1.38 or ^2.7 is required for the twig integration to work.
+**Important**: Twig ^2.7  or ^3.0 is required for the twig integration to work.
 
 By default this bundle will add a global `request_id` function to your twig
 environment. To disable this set `enable_twig` to `false` in the bundle

@@ -25,5 +25,8 @@
         "psr-4": {
             "Chrisguitarguy\\RequestId\\": "src/"
         }
+    },
+    "conflict": {
+        "twig/twig": "<2.7"
     }
 }

@@ -4,6 +4,8 @@
 
 - Added support for `ramsey/uuid` 4.X
 - Dropped PHP 7.2 support
+- Added a `conflict` section to `composer.json` to avoid issues with users
+  working with unsupported twig versions.
 
 ## 4.0.0
 
