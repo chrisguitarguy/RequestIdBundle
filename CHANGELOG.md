@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.1.0 
+
+- Added support for `ramsey/uuid` 4.X
+- Dropped PHP 7.2 support
+
 ## 4.0.0
 
 - Symfony 3.4 is no longer supported
