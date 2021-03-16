@@ -1,4 +1,15 @@
-<?php
+<?php declare(strict_types=1);
+
+/*
+ * This file is part of chrisguitarguy/request-id-bundle
+
+ * Copyright (c) Christopher Davis <http://christopherdavis.me>
+ *
+ * For full copyright information see the LICENSE file distributed
+ * with this source code.
+ *
+ * @license     http://opensource.org/licenses/MIT MIT
+ */
 
 namespace Chrisguitarguy\RequestId;
 
@@ -7,18 +18,14 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 
 final class TestKernel extends Kernel
 {
-    private $configFile;
-
     public function registerBundles()
     {
-        $bundles = array(
+        return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Chrisguitarguy\RequestId\ChrisguitarguyRequestIdBundle(),
-        );
-
-        return $bundles;
+        ];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)

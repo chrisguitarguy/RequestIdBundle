@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -13,7 +14,6 @@
 namespace Chrisguitarguy\RequestId;
 
 use Monolog\Handler\AbstractProcessingHandler;
-use Psr\Log\AbstractLogger;
 
 final class MemoryHandler extends AbstractProcessingHandler implements \Countable
 {

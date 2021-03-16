@@ -24,5 +24,5 @@ interface RequestIdGenerator
     /**
      * Create a new request ID.
      */
-    public function generate() : string;
+    public function generate(): string;
 }

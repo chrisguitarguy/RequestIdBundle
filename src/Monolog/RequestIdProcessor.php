@@ -33,7 +33,7 @@ final class RequestIdProcessor
         $this->idStorage = $storage;
     }
 
-    public function __invoke(array $record) : array
+    public function __invoke(array $record): array
     {
         if ($id = $this->idStorage->getRequestId()) {
             $record['extra']['request_id'] = $id;

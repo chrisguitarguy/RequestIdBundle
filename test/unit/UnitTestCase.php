@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -12,7 +13,8 @@
 
 namespace Chrisguitarguy\RequestId;
 
-abstract class UnitTestCase extends \PHPUnit\Framework\TestCase
-{
+use PHPUnit\Framework\TestCase;
 
+abstract class UnitTestCase extends TestCase
+{
 }

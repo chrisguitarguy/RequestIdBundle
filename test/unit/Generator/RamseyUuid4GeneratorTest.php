@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -12,8 +13,8 @@
 
 namespace Chrisguitarguy\RequestId\Generator;
 
-use Ramsey\Uuid\UuidFactoryInterface;
 use Chrisguitarguy\RequestId\UnitTestCase;
+use Ramsey\Uuid\UuidFactoryInterface;
 
 class RamseyUuid4GeneratorTest extends UnitTestCase
 {
@@ -26,11 +27,9 @@ class RamseyUuid4GeneratorTest extends UnitTestCase
         // we're not going to mock anything here, I'm more
         // interested in making sure we're using the library
         // correctly than worry about mocking method calls.
-        $s = new RamseyUuid4Generator();
-
-        $id = $s->generate();
+        $id = (new RamseyUuid4Generator())->generate();
 
         $this->assertNotEmpty($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
     }
 }

@@ -13,9 +13,7 @@
 
 namespace Chrisguitarguy\RequestId\DependencyInjection;
 
-use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Chrisguitarguy\RequestId\SimpleIdStorage;
@@ -27,13 +25,13 @@ use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
 use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
 
 /**
- * Registers some container congiruation with the application.
+ * Registers some container configuration with the application.
  *
  * @since   1.0
  */
 final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 {
-    protected function loadInternal(array $config, ContainerBuilder $container) : void
+    protected function loadInternal(array $config, ContainerBuilder $container): void
     {
         $container->register(SimpleIdStorage::class)
             ->setPublic(false);

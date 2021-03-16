@@ -75,15 +75,15 @@ final class RequestIdListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents() : array
+    public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::REQUEST   => ['onRequest', 100],
-            KernelEvents::RESPONSE  => ['onResponse', -99],
+            KernelEvents::REQUEST => ['onRequest', 100],
+            KernelEvents::RESPONSE => ['onResponse', -99],
         ];
     }
 
-    public function onRequest(RequestEvent $event) : void
+    public function onRequest(RequestEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -95,6 +95,7 @@ final class RequestIdListener implements EventSubscriberInterface
         // its headers already put that into our ID storage.
         if ($this->trustRequest && ($id = $req->headers->get($this->requestHeader))) {
             $this->idStorage->setRequestId($id);
+
             return;
         }
 
@@ -102,6 +103,7 @@ final class RequestIdListener implements EventSubscriberInterface
         // don't need to do anything other than put it into the request headers
         if ($id = $this->idStorage->getRequestId()) {
             $req->headers->set($this->requestHeader, $id);
+
             return;
         }
 
@@ -110,7 +112,7 @@ final class RequestIdListener implements EventSubscriberInterface
         $this->idStorage->setRequestId($id);
     }
 
-    public function onResponse(ResponseEvent $event) : void
+    public function onResponse(ResponseEvent $event): void
     {
         if (!$event->isMasterRequest()) {
             return;

@@ -37,7 +37,7 @@ final class RequestIdExtension extends AbstractExtension
     /**
      * {@inheritdoc}
      */
-    public function getFunctions() : array
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('request_id', [$this->idStorage, 'getRequestId']),

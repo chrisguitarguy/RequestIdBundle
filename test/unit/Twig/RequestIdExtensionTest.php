@@ -13,10 +13,11 @@
 namespace Chrisguitarguy\RequestId\Twig;
 
 use Chrisguitarguy\RequestId\SimpleIdStorage;
+use Chrisguitarguy\RequestId\UnitTestCase;
 use Twig\Loader\ArrayLoader;
 use Twig\Environment;
 
-class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
+class RequestIdExtensionTest extends UnitTestCase
 {
     const TEMPLATE = '{{ request_id() }}';
 
@@ -31,7 +32,7 @@ class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
         $this->assertSame($result, 'abc123');
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $loader = new ArrayLoader([
             'test' => self::TEMPLATE,

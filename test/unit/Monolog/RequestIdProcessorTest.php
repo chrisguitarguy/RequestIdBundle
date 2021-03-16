@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /*
  * This file is part of chrisguitarguy/request-id-bundle
 
@@ -38,7 +39,7 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->assertEquals('abc123', $record['extra']['request_id']);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->idStorage = $this->createMock(RequestIdStorage::class);
         $this->processor = new RequestIdProcessor($this->idStorage);

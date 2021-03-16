@@ -6,14 +6,16 @@ framework:
     test: ~
     secret: "%secret%"
     router:
+        utf8: true
         resource: "%kernel.project_dir%/config/routing.yml"
         strict_requirements: "%kernel.debug%"
-    default_locale:  "%locale%"
+    default_locale: "%locale%"
 
 twig:
-  strict_variables: "%kernel.debug%"
-  paths:
-    "%kernel.project_dir%/templates": requestid
+    exception_controller: ~
+    strict_variables: "%kernel.debug%"
+    paths:
+        "%kernel.project_dir%/templates": requestid
 
 services:
     log.formatter:
@@ -24,7 +26,7 @@ services:
         public: true
         class: Chrisguitarguy\RequestId\MemoryHandler
         calls:
-            - [setFormatter, ["@log.formatter"]]
+            - [ setFormatter, [ "@log.formatter" ] ]
 
 monolog:
     handlers:

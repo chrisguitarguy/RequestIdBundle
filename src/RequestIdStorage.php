@@ -13,8 +13,6 @@
 
 namespace Chrisguitarguy\RequestId;
 
-use Symfony\Component\HttpFoundation\Request;
-
 /**
  * Stores the identifiers for the request.
  *
@@ -27,12 +25,12 @@ interface RequestIdStorage
      *
      * @return  string|null Null if the request does not have an identifier
      */
-    public function getRequestId() : ?string;
+    public function getRequestId(): ?string;
 
     /**
      * Set the request ID.
      *
-     * @param   string $id The ID to set
+     * @param string $id The ID to set
      */
-    public function setRequestId(?string $id) : void;
+    public function setRequestId(?string $id): void;
 }
