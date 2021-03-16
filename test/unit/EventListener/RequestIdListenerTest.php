@@ -192,7 +192,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->assertEquals('ghi345', $this->response->headers->get(self::RESPONSE_HEADER));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->idStorage = $this->createMock(RequestIdStorage::class);
         $this->idGen = $this->createMock(RequestIdGenerator::class);
