@@ -111,7 +111,7 @@ class HttpTest extends WebTestCase
     private function assertLogsHaveRequestId($client, $id)
     {
         foreach ($this->getLogs($client) as $msg) {
-            $this->assertContains($id, $msg); // veri
+            $this->assertStringContainsString($id, $msg); // veri
         }
     }
 

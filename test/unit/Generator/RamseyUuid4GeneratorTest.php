@@ -31,6 +31,6 @@ class RamseyUuid4GeneratorTest extends UnitTestCase
         $id = $s->generate();
 
         $this->assertNotEmpty($id);
-        $this->assertInternalType('string', $id);
+        $this->assertIsString($id);
     }
 }

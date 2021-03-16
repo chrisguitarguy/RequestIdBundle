@@ -31,7 +31,7 @@ class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
         $this->assertSame($result, 'abc123');
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $loader = new ArrayLoader([
             'test' => self::TEMPLATE,
