@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 4.2.0
+
+- Dropped PHP 7.3 support
+- Added PHP 8.0 support
+
 ## 4.1.0 
 
 - Added support for `ramsey/uuid` 4.X
