@@ -14,6 +14,7 @@
 namespace Chrisguitarguy\RequestId\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -53,6 +54,13 @@ final class RequestIdListener implements EventSubscriberInterface
      */
     private RequestIdGenerator $idGenerator;
 
+    /**
+     * symfony5-compat
+     *
+     * Stores whether we have an `isMainRequest` method to use instead of isMasterRequest
+     */
+    private bool $hasIsMainRequest;
+
     public function __construct(string $reqHeader, string $respHeader, bool $trustReq, RequestIdStorage $storage, RequestIdGenerator $generator)
     {
         $this->requestHeader = $reqHeader;
@@ -60,6 +68,7 @@ final class RequestIdListener implements EventSubscriberInterface
         $this->trustRequest = $trustReq;
         $this->idStorage = $storage;
         $this->idGenerator = $generator;
+        $this->hasIsMainRequest = method_exists(KernelEvent::class, 'isMainRequest');
     }
 
     /**
@@ -75,7 +84,7 @@ final class RequestIdListener implements EventSubscriberInterface
 
     public function onRequest(RequestEvent $event) : void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$this->isMainRequest($event)) {
             return;
         }
 
@@ -102,12 +111,17 @@ final class RequestIdListener implements EventSubscriberInterface
 
     public function onResponse(ResponseEvent $event) : void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$this->isMainRequest($event)) {
             return;
         }
 
         if ($id = $this->idStorage->getRequestId()) {
             $event->getResponse()->headers->set($this->responseHeader, $id);
         }
+    }
+
+    private function isMainRequest(KernelEvent $event) : bool
+    {
+        return $this->hasIsMainRequest ? $event->isMainRequest() : $event->isMasterRequest();
     }
 }
