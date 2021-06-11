@@ -14,6 +14,7 @@
 namespace Chrisguitarguy\RequestId\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -29,47 +30,45 @@ final class RequestIdListener implements EventSubscriberInterface
 {
     /**
      * The header to inspect for the incoming request ID.
-     *
-     * @var string
      */
-    private $requestHeader;
+    private string $requestHeader;
 
     /**
      * The header that will contain the request ID in the response.
-     *
-     * @var string
      */
-    private $responseHeader;
+    private string $responseHeader;
 
     /**
      * Trust the value from the request? Or generate?
-     *
-     * @var boolean
      */
-    private $trustRequest;
+    private bool $trustRequest;
 
     /**
      * The request ID storage, used to store the ID from the request or a
      * newly generated ID.
-     *
-     * @var RequestIdStorage
      */
-    private $idStorage;
+    private RequestIdStorage $idStorage;
 
     /**
      * Used to generate a request ID if one isn't present.
-     *
-     * @var RequestIdGenerator
      */
-    private $idGenerator;
+    private RequestIdGenerator $idGenerator;
 
-    public function __construct($reqHeader, $respHeader, $trustReq, RequestIdStorage $storage, RequestIdGenerator $generator)
+    /**
+     * symfony5-compat
+     *
+     * Stores whether we have an `isMainRequest` method to use instead of isMasterRequest
+     */
+    private bool $hasIsMainRequest;
+
+    public function __construct(string $reqHeader, string $respHeader, bool $trustReq, RequestIdStorage $storage, RequestIdGenerator $generator)
     {
         $this->requestHeader = $reqHeader;
         $this->responseHeader = $respHeader;
         $this->trustRequest = $trustReq;
         $this->idStorage = $storage;
         $this->idGenerator = $generator;
+        $this->hasIsMainRequest = method_exists(KernelEvent::class, 'isMainRequest');
     }
 
     /**
@@ -85,7 +84,7 @@ final class RequestIdListener implements EventSubscriberInterface
 
     public function onRequest(RequestEvent $event) : void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$this->isMainRequest($event)) {
             return;
         }
 
@@ -112,12 +111,17 @@ final class RequestIdListener implements EventSubscriberInterface
 
     public function onResponse(ResponseEvent $event) : void
     {
-        if (!$event->isMasterRequest()) {
+        if (!$this->isMainRequest($event)) {
             return;
         }
 
         if ($id = $this->idStorage->getRequestId()) {
             $event->getResponse()->headers->set($this->responseHeader, $id);
         }
+    }
+
+    private function isMainRequest(KernelEvent $event) : bool
+    {
+        return $this->hasIsMainRequest ? $event->isMainRequest() : $event->isMasterRequest();
     }
 }
