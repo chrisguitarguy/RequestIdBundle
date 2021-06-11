@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.2.1
+
+- Fixed deprecation warnings from `KernelEvent::isMasterRequest` with Symfony 5.3
+
 ## 4.2.0
 
 - Dropped PHP 7.3 support
