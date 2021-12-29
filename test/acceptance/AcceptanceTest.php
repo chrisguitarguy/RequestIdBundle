@@ -98,7 +98,7 @@ class HttpTest extends WebTestCase
         $this->assertInstanceOf($class, $service);
     }
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
         return TestKernel::class;
     }

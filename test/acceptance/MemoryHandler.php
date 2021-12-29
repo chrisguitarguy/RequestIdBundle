@@ -27,9 +27,9 @@ final class MemoryHandler extends AbstractProcessingHandler implements \Countabl
         $this->logs[] = (string) $record['formatted'];
     }
 
-    public function count()
+    public function count(): int
     {
-        return count($this->logs);
+        return \count($this->logs);
     }
 
     public function getLogs()

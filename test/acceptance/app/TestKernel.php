@@ -9,7 +9,7 @@ final class TestKernel extends Kernel
 {
     private $configFile;
 
-    public function registerBundles()
+    public function registerBundles(): array
     {
         $bundles = array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -26,17 +26,17 @@ final class TestKernel extends Kernel
         $loader->load($this->getProjectDir()."/config/config.yml");
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return __DIR__.'/tmp';
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return __DIR__.'/tmp';
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
@@ -46,7 +46,7 @@ final class TestKernel extends Kernel
         return $this->getContainer()->get('log.memory_handler')->getLogs();
     }
 
-    public function boot()
+    public function boot(): void
     {
         // clear up the cached files
         foreach (glob(__DIR__.'/app/tmp/*') as $fn) {
