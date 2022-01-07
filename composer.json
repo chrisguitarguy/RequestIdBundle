@@ -1,5 +1,5 @@
 {
-    "name": "chrisguitarguy/request-id-bundle",
+    "name": "arnedesmedt/request-id-bundle",
     "description": "Add request IDs to to your Symfony requests.",
     "keywords": ["symfony", "request id"],
     "license": "MIT",
