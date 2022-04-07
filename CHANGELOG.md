@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 5.0.0
+
+- Dropped support for Symfony for Symfony 5 less than 5.4
+- Added support for Symfony 6.X
+
 ## 4.2.1
 
 - Fixed deprecation warnings from `KernelEvent::isMasterRequest` with Symfony 5.3
