@@ -98,12 +98,15 @@ class HttpTest extends WebTestCase
         $this->assertInstanceOf($class, $service);
     }
 
-    protected static function getKernelClass()
+    protected static function getKernelClass() : string
     {
         return TestKernel::class;
     }
 
-    private function getLogs($client)
+    /**
+     * @return string[]
+     */
+    private function getLogs($client) : array
     {
         return $client->getContainer()->get('log.memory_handler')->getLogs();
     }

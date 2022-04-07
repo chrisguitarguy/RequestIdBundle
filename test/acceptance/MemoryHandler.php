@@ -12,10 +12,11 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use function count;
+use Countable;
 use Monolog\Handler\AbstractProcessingHandler;
-use Psr\Log\AbstractLogger;
 
-final class MemoryHandler extends AbstractProcessingHandler implements \Countable
+final class MemoryHandler extends AbstractProcessingHandler implements Countable
 {
     private $logs = [];
 
@@ -27,12 +28,15 @@ final class MemoryHandler extends AbstractProcessingHandler implements \Countabl
         $this->logs[] = (string) $record['formatted'];
     }
 
-    public function count()
+    public function count() : int
     {
         return count($this->logs);
     }
 
-    public function getLogs()
+    /**
+     * @return string[]
+     */
+    public function getLogs() : array
     {
         return $this->logs;
     }
