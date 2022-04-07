@@ -72,4 +72,4 @@ jobs:
           composer global require --no-progress --no-scripts --no-plugins symfony/flex
           composer update --no-interaction --no-progress ${{ matrix.composer-flags }}
       - name: "Run PHPUnit"
-        run: "./phpunit"
+        run: ./vendor/bin/phpunit
