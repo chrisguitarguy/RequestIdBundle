@@ -12,6 +12,7 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use Monolog\LogRecord;
 use function count;
 use Countable;
 use Monolog\Handler\AbstractProcessingHandler;
@@ -23,9 +24,13 @@ final class MemoryHandler extends AbstractProcessingHandler implements Countable
     /**
      * {@inheritdoc}
      */
-    protected function write(array $record): void
+    protected function write($record): void
     {
-        $this->logs[] = (string) $record['formatted'];
+        if ($record instanceof LogRecord) {
+            $this->logs[] = (string) $record->formatted;
+        } else {
+            $this->logs[] = (string) $record['formatted'];
+        }
     }
 
     public function count() : int
