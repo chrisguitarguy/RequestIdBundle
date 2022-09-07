@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 5.1.0
+
+- Added support for Monolog 3.X
+
 ## 5.0.0
 
 - Dropped support for Symfony for Symfony 5 less than 5.4
