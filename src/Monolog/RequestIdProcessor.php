@@ -14,6 +14,7 @@
 namespace Chrisguitarguy\RequestId\Monolog;
 
 use Chrisguitarguy\RequestId\RequestIdStorage;
+use Monolog\LogRecord;
 
 /**
  * Adds the request ID to the Monolog record's `extra` key so it can be used
@@ -33,10 +34,19 @@ final class RequestIdProcessor
         $this->idStorage = $storage;
     }
 
-    public function __invoke(array $record) : array
+    /**
+     * @param array|LogRecord $record
+     *
+     * @return array|LogRecord
+     */
+    public function __invoke($record)
     {
         if ($id = $this->idStorage->getRequestId()) {
-            $record['extra']['request_id'] = $id;
+            if ($record instanceof LogRecord) {
+                $record->extra['request_id'] = $id;
+            } else {
+                $record['extra']['request_id'] = $id;
+            }
         }
 
         return $record;
