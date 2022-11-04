@@ -13,17 +13,19 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use Symfony\Contracts\Service\ResetInterface;
+
 /**
  * And ID storage backed by a property, simple.
  *
  * @since   1.0
  */
-final class SimpleIdStorage implements RequestIdStorage
+final class SimpleIdStorage implements RequestIdStorage, ResetInterface
 {
     /**
      * @var string
      */
-    private $requestId;
+    private $requestId = null;
 
     /**
      * {@inheritdoc}
@@ -39,5 +41,10 @@ final class SimpleIdStorage implements RequestIdStorage
     public function setRequestId(?string $id) : void
     {
         $this->requestId = $id;
+    }
+
+    public function reset()
+    {
+        $this->requestId = null;
     }
 }
