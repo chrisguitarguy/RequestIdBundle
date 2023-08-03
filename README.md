@@ -12,6 +12,14 @@ Use [Composer](https://getcomposer.org/).
 ```
 composer require chrisguitarguy/request-id-bundle
 ```
+And one of the UUIDv4 generator libraries: 
+```
+composer require ramsey/uuid
+```
+```
+composer require symfony/uid
+```
+
 
 Then enable the bundle in your `AppKernel`.
 
@@ -64,7 +72,7 @@ chrisguitarguy_request_id:
 
     # The service key of an object that implements
     # Chrisguitarguy\RequestId\RequestIdGenerator
-    # optional, defaults to a UUID v4 based generator
+    # optional, defaults to a Ramsey's UUID v4 based generator
     generator_service: ~
 
     # Whether or not to add the monolog process (see below), defaults to true
