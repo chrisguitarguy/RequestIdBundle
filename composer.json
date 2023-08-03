@@ -6,11 +6,11 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^7.4 || ^8.0",
-        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0",
-        "ramsey/uuid": "^3.9 || ^4.3"
+        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
+        "ramsey/uuid": "^3.9 || ^4.3",
         "symfony/monolog-bundle": "^3.7",
         "twig/twig": "^2.7 || ^3.0",
         "symfony/twig-bundle": "^4.4 || ^5.4 || ^6.0",
@@ -19,12 +19,17 @@
         "symfony/phpunit-bridge": "^4.4 || ^5.4 || ^6.0",
         "symfony/yaml": "^4.4 || ^5.4 || ^6.0",
         "symfony/templating": "^4.4 || ^5.4 || ^6.0",
-        "symfony/monolog-bridge": "^4.4 || ^5.4 || ^6.0"
+        "symfony/monolog-bridge": "^4.4 || ^5.4 || ^6.0",
+        "symfony/uid": "^5.4 || ^6.0"
     },
     "autoload": {
         "psr-4": {
             "Chrisguitarguy\\RequestId\\": "src/"
         }
+    },
+    "suggest": {
+        "ramsey/uuid": "Ramsey's UUID generator",
+        "symfony/uid": "Symfony's UUID generator"
     },
     "conflict": {
         "twig/twig": "<2.7"
