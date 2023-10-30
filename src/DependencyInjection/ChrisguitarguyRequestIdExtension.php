@@ -22,6 +22,7 @@ use Chrisguitarguy\RequestId\SimpleIdStorage;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\Generator\RamseyUuid4Generator;
+use Chrisguitarguy\RequestId\EventListener\CommandSubscriber;
 use Chrisguitarguy\RequestId\EventListener\RequestIdListener;
 use Chrisguitarguy\RequestId\Monolog\RequestIdProcessor;
 use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
@@ -53,6 +54,14 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
                 $config['request_header'],
                 $config['response_header'],
                 $config['trust_request_header'],
+                new Reference($storeId),
+                new Reference($genId),
+            ])
+            ->setPublic(false)
+            ->addTag('kernel.event_subscriber');
+
+        $container->register(CommandSubscriber::class)
+            ->setArguments([
                 new Reference($storeId),
                 new Reference($genId),
             ])
