@@ -9,14 +9,15 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 final class TestKernel extends Kernel
 {
     /**
-     * @inheritDoc
+     * @return iterable<int|string, BundleInterface>
      */
-    public function registerBundles(): array
+    public function registerBundles(): iterable
     {
         return [
             new FrameworkBundle(),
@@ -36,12 +37,12 @@ final class TestKernel extends Kernel
 
     public function getLogDir(): string
     {
-        return __DIR__ . '/app/tmp';
+        return dirname(__DIR__, 2) . '/tmp';
     }
 
     public function getCacheDir(): string
     {
-        return __DIR__ . '/app/tmp';
+        return dirname(__DIR__, 2) . '/tmp';
     }
 
     public function getProjectDir(): string
