@@ -36,12 +36,12 @@ final class TestKernel extends Kernel
 
     public function getLogDir(): string
     {
-        return __DIR__ . '/tmp';
+        return __DIR__ . '/app/tmp';
     }
 
     public function getCacheDir(): string
     {
-        return __DIR__ . '/tmp';
+        return __DIR__ . '/app/tmp';
     }
 
     public function getProjectDir(): string

@@ -22,6 +22,7 @@
     },
     "require-dev": {
         "digitalrevolution/phpunit-file-coverage-inspection": "^v2.0.0",
+        "digitalrevolution/utils": "^1.9",
         "phpmd/phpmd": "^2.14",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^1.10",

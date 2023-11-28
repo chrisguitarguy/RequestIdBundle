@@ -6,25 +6,28 @@ namespace DR\SymfonyRequestId\Tests\Acceptance;
 
 use DR\SymfonyRequestId\RequestIdGenerator;
 use DR\SymfonyRequestId\RequestIdStorage;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\TestWith;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
+#[CoversNothing]
 class AcceptanceTest extends WebTestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testRequestThatAlreadyHasARequestIdDoesNotReplaceIt(): void
     {
-        $client = $this->createClient();
+        $client = self::createClient();
 
-        $crawler = $client->request('GET', '/', [], [], [
-            'HTTP_REQUEST_ID' => 'testId',
-        ]);
-        $resp    = $client->getResponse();
+        $crawler = $client->request('GET', '/', [], [], ['HTTP_X_REQUEST_ID' => 'testId']);
+        static::assertResponseIsSuccessful();
 
-        static::assertSuccessfulResponse($resp);
-        static::assertSame('testId', $resp->headers->get('Request-Id'));
-        static::assertSame('testId', $client->getContainer()->get(RequestIdStorage::class)->getRequestId());
-        static::assertLogsHaveRequestId($client, 'testId');
+        $response = $client->getResponse();
+        static::assertSame('testId', $response->headers->get('X-Request-Id'));
+        static::assertSame('testId', self::getService(RequestIdStorage::class)->getRequestId());
+        self::assertLogsHaveRequestId('testId');
         static::assertGreaterThan(
             0,
             $crawler->filter('h1:contains("testId")')->count(),
@@ -32,19 +35,19 @@ class AcceptanceTest extends WebTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testAlreadySetRequestIdUsesValueFromStorage(): void
     {
-        $client = $this->createClient();
-        $client->getContainer()->get(RequestIdStorage::class)->setRequestId('abc123');
+        $client = self::createClient();
+        self::getService(RequestIdStorage::class)->setRequestId('abc123');
 
         $crawler = $client->request('GET', '/');
-        $resp    = $client->getResponse();
-        $req     = $client->getRequest();
-
-        static::assertSuccessfulResponse($resp);
-        static::assertSame('abc123', $resp->headers->get('Request-Id'));
-        static::assertSame('abc123', $req->headers->get('Request-Id'));
-        static::assertLogsHaveRequestId($client, 'abc123');
+        static::assertResponseIsSuccessful();
+        static::assertSame('abc123', $client->getResponse()->headers->get('X-Request-Id'));
+        static::assertSame('abc123', $client->getRequest()->headers->get('X-Request-Id'));
+        self::assertLogsHaveRequestId('abc123');
         static::assertGreaterThan(
             0,
             $crawler->filter('h1:contains("abc123")')->count(),
@@ -52,20 +55,21 @@ class AcceptanceTest extends WebTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse(): void
     {
-        $client = $this->createClient();
+        $client = self::createClient();
 
         $crawler = $client->request('GET', '/');
-        $resp    = $client->getResponse();
-        $req     = $client->getRequest();
+        static::assertResponseIsSuccessful();
 
-        static::assertSuccessfulResponse($resp);
-        $id = $client->getContainer()->get(RequestIdStorage::class)->getRequestId();
+        $id = self::getService(RequestIdStorage::class)->getRequestId();
         static::assertNotEmpty($id);
-        static::assertSame($id, $resp->headers->get('Request-Id'));
-        static::assertSame($id, $req->headers->get('Request-Id'));
-        static::assertLogsHaveRequestId($client, $id);
+        static::assertSame($id, $client->getResponse()->headers->get('Request-Id'));
+        static::assertSame($id, $client->getRequest()->headers->get('Request-Id'));
+        self::assertLogsHaveRequestId($id);
         static::assertGreaterThan(
             0,
             $crawler->filter(sprintf('h1:contains("%s")', $id))->count(),
@@ -74,22 +78,15 @@ class AcceptanceTest extends WebTestCase
     }
 
     /**
-     * @return array<string[]>
+     * @param class-string $class
+     * @throws Exception
      */
-    public static function publicServices(): array
-    {
-        return [
-            [RequestIdStorage::class],
-            [RequestIdGenerator::class],
-        ];
-    }
-
-    #[DataProvider('publicServices')]
+    #[TestWith([RequestIdStorage::class])]
+    #[TestWith([RequestIdGenerator::class])]
     public function testExpectedServicesArePubliclyAvailableFromTheContainer(string $class): void
     {
-        $client = $this->createClient();
-
-        $service = $client->getContainer()->get($class);
+        /** @var object $service */
+        $service = self::getContainer()->get($class);
 
         static::assertInstanceOf($class, $service);
     }
@@ -100,24 +97,29 @@ class AcceptanceTest extends WebTestCase
     }
 
     /**
-     * @return string[]
+     * @throws Exception
      */
-    private static function getLogs($client): array
+    private static function assertLogsHaveRequestId(string $id): void
     {
-        return $client->getContainer()->get('log.memory_handler')->getLogs();
-    }
-
-    private static function assertLogsHaveRequestId($client, $id): void
-    {
-        foreach (self::getLogs($client) as $msg) {
-            static::assertStringContainsString($id, $msg);
+        /** @var string[] $logs */
+        $logs = self::getService(MemoryHandler::class, 'log.memory_handler')->getLogs();
+        foreach ($logs as $message) {
+            static::assertStringContainsString($id, $message);
         }
     }
 
-    private static function assertSuccessfulResponse($resp): void
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     *
+     * @return T
+     * @throws Exception
+     */
+    private static function getService(string $class, string $id = null): object
     {
-        static::assertInstanceOf(Response::class, $resp);
-        static::assertGreaterThanOrEqual(200, $resp->getStatusCode());
-        static::assertLessThan(300, $resp->getStatusCode());
+        $service = self::getContainer()->get($id ?? $class);
+        static::assertInstanceOf($class, $service);
+
+        return $service;
     }
 }

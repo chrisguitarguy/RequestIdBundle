@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace DR\SymfonyRequestId\Tests\Acceptance;
 
 use Countable;
+use DR\Utils\Assert;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
 
@@ -14,12 +15,9 @@ final class MemoryHandler extends AbstractProcessingHandler implements Countable
     /** @var string[] */
     private array $logs = [];
 
-    /**
-     * @inheritdoc
-     */
     protected function write(LogRecord $record): void
     {
-        $this->logs[] = (string)$record->formatted;
+        $this->logs[] = Assert::string($record->formatted);
     }
 
     public function count(): int
