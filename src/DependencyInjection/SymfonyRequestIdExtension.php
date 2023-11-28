@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 /**
- * Registers some container configuration with the application.
+ * @codeCoverageIgnore - This is a configuration class, tested by the acceptance test
  * @internal
  */
 final class SymfonyRequestIdExtension extends ConfigurableExtension
