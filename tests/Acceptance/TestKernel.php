@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace DR\SymfonyRequestId\Tests\Acceptance;
 
 use DR\SymfonyRequestId\RequestIdBundle;
-use DR\Utils\Assert;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
@@ -48,17 +47,5 @@ final class TestKernel extends Kernel
     public function getProjectDir(): string
     {
         return __DIR__;
-    }
-
-    public function boot(): void
-    {
-        // clear up the cached files
-        foreach (Assert::notFalse(glob(__DIR__ . '/app/tmp/*')) as $fn) {
-            if ('.' !== basename($fn)[0]) {
-                @unlink($fn);
-            }
-        }
-
-        parent::boot();
     }
 }
