@@ -11,6 +11,11 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(SymfonyUuid4Generator::class)]
 class SymfonyUuid4GeneratorTest extends TestCase
 {
+    public function testIsSupported(): void
+    {
+        static::assertTrue(SymfonyUuid4Generator::isSupported());
+    }
+
     public function testGenerate(): void
     {
         // we're not going to mock anything here, I'm more
