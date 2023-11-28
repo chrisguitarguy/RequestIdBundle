@@ -21,11 +21,11 @@ class AcceptanceTest extends WebTestCase
     {
         $client = self::createClient();
 
-        $crawler = $client->request('GET', '/', [], [], ['HTTP_X_REQUEST_ID' => 'testId']);
+        $crawler = $client->request('GET', '/', [], [], ['HTTP_REQUEST_ID' => 'testId']);
         static::assertResponseIsSuccessful();
 
         $response = $client->getResponse();
-        static::assertSame('testId', $response->headers->get('X-Request-Id'));
+        static::assertSame('testId', $response->headers->get('Request-Id'));
         static::assertSame('testId', self::getService(RequestIdStorage::class)->getRequestId());
         self::assertLogsHaveRequestId('testId');
         static::assertGreaterThan(
@@ -45,8 +45,8 @@ class AcceptanceTest extends WebTestCase
 
         $crawler = $client->request('GET', '/');
         static::assertResponseIsSuccessful();
-        static::assertSame('abc123', $client->getResponse()->headers->get('X-Request-Id'));
-        static::assertSame('abc123', $client->getRequest()->headers->get('X-Request-Id'));
+        static::assertSame('abc123', $client->getResponse()->headers->get('Request-Id'));
+        static::assertSame('abc123', $client->getRequest()->headers->get('Request-Id'));
         self::assertLogsHaveRequestId('abc123');
         static::assertGreaterThan(
             0,
@@ -67,8 +67,8 @@ class AcceptanceTest extends WebTestCase
 
         $id = self::getService(RequestIdStorage::class)->getRequestId();
         static::assertNotEmpty($id);
-        static::assertSame($id, $client->getResponse()->headers->get('X-Request-Id'));
-        static::assertSame($id, $client->getRequest()->headers->get('X-Request-Id'));
+        static::assertSame($id, $client->getResponse()->headers->get('Request-Id'));
+        static::assertSame($id, $client->getRequest()->headers->get('Request-Id'));
         self::assertLogsHaveRequestId($id);
         static::assertGreaterThan(
             0,

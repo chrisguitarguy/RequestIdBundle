@@ -11,6 +11,11 @@ framework:
         utf8: true
     default_locale:  "%locale%"
 
+symfony_request_id:
+  request_header: Request-Id
+  response_header: Request-Id
+  trust_request_header: true
+
 twig:
   strict_variables: "%kernel.debug%"
   paths:
