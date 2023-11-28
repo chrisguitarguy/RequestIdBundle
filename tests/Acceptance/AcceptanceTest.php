@@ -67,8 +67,8 @@ class AcceptanceTest extends WebTestCase
 
         $id = self::getService(RequestIdStorage::class)->getRequestId();
         static::assertNotEmpty($id);
-        static::assertSame($id, $client->getResponse()->headers->get('Request-Id'));
-        static::assertSame($id, $client->getRequest()->headers->get('Request-Id'));
+        static::assertSame($id, $client->getResponse()->headers->get('X-Request-Id'));
+        static::assertSame($id, $client->getRequest()->headers->get('X-Request-Id'));
         self::assertLogsHaveRequestId($id);
         static::assertGreaterThan(
             0,
