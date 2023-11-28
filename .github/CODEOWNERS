@@ -1,0 +1,3 @@
+# Automatically assign the Team "Reviewers" to every PR
+# The auto assignment on this team will route this team's code review requests to individual members
+* @123inkt/Reviewers
