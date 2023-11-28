@@ -31,7 +31,6 @@ final class SymfonyRequestIdExtension extends ConfigurableExtension
      *     storage_service: ?string,
      *     generator_service: ?string,
      *     enable_monolog: bool,
-     *     enable_console: bool,
      *     enable_twig: bool,
      * } $mergedConfig
      */
