@@ -23,7 +23,7 @@ services:
             - "[%%level_name%% - %%extra.request_id%%] %%message%%"
     log.memory_handler:
         public: true
-        class: Chrisguitarguy\RequestId\MemoryHandler
+        class: DR\SymfonyRequestId\Tests\Acceptance\MemoryHandler
         calls:
             - [setFormatter, ["@log.formatter"]]
 
