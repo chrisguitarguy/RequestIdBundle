@@ -22,9 +22,9 @@ class RequestIdExtensionTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->storage = new SimpleIdStorage();
         $this->environment = new Environment(new ArrayLoader(['test' => self::TEMPLATE]));
         $this->environment->addExtension(new RequestIdExtension($this->storage));
-        $this->storage = new SimpleIdStorage();
     }
 
     /**

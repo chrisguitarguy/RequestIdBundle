@@ -57,7 +57,7 @@ class RequestIdListenerTest extends TestCase
             $this->request,
             HttpKernelInterface::SUB_REQUEST
         );
-        $this->idStorage->expects($this->never())
+        $this->idStorage->expects(self::never())
             ->method('getRequestId');
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
@@ -67,7 +67,7 @@ class RequestIdListenerTest extends TestCase
     {
         $this->request->headers->set(self::REQUEST_HEADER, 'testId');
         $this->willNotGenerate();
-        $this->idStorage->expects($this->never())
+        $this->idStorage->expects(self::never())
             ->method('getRequestId');
         $this->idStorage->expects(self::once())
             ->method('setRequestId')
@@ -84,7 +84,7 @@ class RequestIdListenerTest extends TestCase
     public function testListenerSetsTheIdOnRequestWhenItsFoundInStorage(): void
     {
         $this->willNotGenerate();
-        $this->idStorage->expects(self::once())
+        $this->idStorage->expects(self::exactly(2))
             ->method('getRequestId')
             ->willReturn('abc123');
         $this->idStorage->expects(self::never())
@@ -157,7 +157,7 @@ class RequestIdListenerTest extends TestCase
 
     public function testListenerDoesNothingToResponseWithoutMasterRequest(): void
     {
-        $this->idStorage->expects($this->never())
+        $this->idStorage->expects(self::never())
             ->method('getRequestId');
 
         $this->dispatcher->dispatch(
@@ -194,7 +194,7 @@ class RequestIdListenerTest extends TestCase
 
     public function testRequestWithIdInStorageSetsIdOnResponse(): void
     {
-        $this->idStorage->expects(self::once())
+        $this->idStorage->expects(self::exactly(2))
             ->method('getRequestId')
             ->willReturn('ghi345');
 
@@ -213,6 +213,6 @@ class RequestIdListenerTest extends TestCase
 
     private function willNotGenerate(): void
     {
-        $this->idGen->expects($this->never())->method('generate');
+        $this->idGen->expects(self::never())->method('generate');
     }
 }
