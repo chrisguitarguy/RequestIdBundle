@@ -79,6 +79,7 @@ class AcceptanceTest extends WebTestCase
 
     /**
      * @param class-string $class
+     *
      * @throws Exception
      */
     #[TestWith([RequestIdStorage::class])]
@@ -89,11 +90,6 @@ class AcceptanceTest extends WebTestCase
         $service = self::getContainer()->get($class);
 
         static::assertInstanceOf($class, $service);
-    }
-
-    protected static function getKernelClass(): string
-    {
-        return TestKernel::class;
     }
 
     /**
