@@ -15,7 +15,6 @@ namespace Chrisguitarguy\RequestId\EventListener;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +55,7 @@ class RequestIdListenerTest extends UnitTestCase
         $event = new RequestEvent(
             $this->kernel,
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
@@ -73,7 +72,7 @@ class RequestIdListenerTest extends UnitTestCase
         $event = new RequestEvent(
             $this->kernel,
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
@@ -95,7 +94,7 @@ class RequestIdListenerTest extends UnitTestCase
         $event = new RequestEvent(
             $this->kernel,
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
@@ -128,7 +127,7 @@ class RequestIdListenerTest extends UnitTestCase
         $event = new RequestEvent(
             $this->kernel,
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST
+            HttpKernelInterface::MAIN_REQUEST
         );
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
@@ -164,7 +163,7 @@ class RequestIdListenerTest extends UnitTestCase
             new ResponseEvent(
                 $this->kernel,
                 $this->request,
-                HttpKernelInterface::MASTER_REQUEST,
+                HttpKernelInterface::MAIN_REQUEST,
                 $this->response
             ),
             KernelEvents::RESPONSE
@@ -183,7 +182,7 @@ class RequestIdListenerTest extends UnitTestCase
             new ResponseEvent(
                 $this->kernel,
                 $this->request,
-                HttpKernelInterface::MASTER_REQUEST,
+                HttpKernelInterface::MAIN_REQUEST,
                 $this->response
             ),
             KernelEvents::RESPONSE
