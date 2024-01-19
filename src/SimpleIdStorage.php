@@ -43,7 +43,7 @@ final class SimpleIdStorage implements RequestIdStorage, ResetInterface
         $this->requestId = $id;
     }
 
-    public function reset()
+    public function reset() : void
     {
         $this->requestId = null;
     }
