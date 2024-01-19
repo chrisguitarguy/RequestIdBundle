@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 6.0.0
+
+- Dropped support for Symfony 4.4.X (thanks @arnedesmedt)
+- Made `SimpleIdStorage` Resetable (thanks @tourze)
+
 ## 5.1.0
 
 - Added support for Monolog 3.X
