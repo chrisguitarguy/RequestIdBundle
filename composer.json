@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "symfony-bundle",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.2",
         "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0",
         "ramsey/uuid": "^3.9 || ^4.3"
     },
