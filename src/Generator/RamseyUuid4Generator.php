@@ -29,7 +29,7 @@ final class RamseyUuid4Generator implements RequestIdGenerator
      */
     private $factory;
 
-    public function __construct(UuidFactoryInterface $factory=null)
+    public function __construct(?UuidFactoryInterface $factory=null)
     {
         $this->factory = $factory ?: new UuidFactory();
     }
