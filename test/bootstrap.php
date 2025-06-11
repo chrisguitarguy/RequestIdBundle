@@ -10,7 +10,6 @@
  * @license     http://opensource.org/licenses/MIT MIT
  */
 
-$loader = require __DIR__.'/../vendor/autoload.php';
-$loader->addPsr4('Chrisguitarguy\\RequestId\\', __DIR__.'/acceptance/');
-$loader->addPsr4('Chrisguitarguy\\RequestId\\', __DIR__.'/unit/');
-require __DIR__.'/acceptance/app/TestKernel.php';
+// https://github.com/symfony/symfony/issues/53812#issuecomment-1962740145
+use Symfony\Component\ErrorHandler\ErrorHandler;
+set_exception_handler([new ErrorHandler(), 'handleException']);

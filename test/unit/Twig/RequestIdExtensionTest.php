@@ -20,9 +20,10 @@ class RequestIdExtensionTest extends \Chrisguitarguy\RequestId\UnitTestCase
 {
     const TEMPLATE = '{{ request_id() }}';
 
-    private $storage, $env;
+    private SimpleIdStorage $storage;
+    private Environment $env;
 
-    public function testTheRequestIdFunctionReturnsTheRequestIdFromTheStorage()
+    public function testTheRequestIdFunctionReturnsTheRequestIdFromTheStorage() : void
     {
         $this->storage->setRequestId('abc123');
 

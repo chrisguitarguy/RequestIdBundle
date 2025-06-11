@@ -12,12 +12,13 @@
 
 namespace Chrisguitarguy\RequestId;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class HttpTest extends WebTestCase
+class AcceptanceTest extends WebTestCase
 {
-    public function testRequestThatAlreadyHasARequestIdDoesNotReplaceIt()
+    public function testRequestThatAlreadyHasARequestIdDoesNotReplaceIt() : void
     {
         $client = $this->createClient();
 
@@ -37,7 +38,7 @@ class HttpTest extends WebTestCase
         );
     }
 
-    public function testAlreadySetRequestIdUsesValueFromStorage()
+    public function testAlreadySetRequestIdUsesValueFromStorage() : void
     {
         $client = $this->createClient();
         $client->getContainer()->get(RequestIdStorage::class)->setRequestId('abc123');
@@ -57,7 +58,7 @@ class HttpTest extends WebTestCase
         );
     }
 
-    public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse()
+    public function testRequestWithOutRequestIdCreatesOnAndPassesThroughTheResponse() : void
     {
         $client = $this->createClient();
 
@@ -78,7 +79,10 @@ class HttpTest extends WebTestCase
         );
     }
 
-    public static function publicServices()
+    /**
+     * @return array<string[]>
+     */
+    public static function publicServices() : array
     {
         return [
             [RequestIdStorage::class],
@@ -86,10 +90,8 @@ class HttpTest extends WebTestCase
         ];
     }
 
-    /**
-     * @dataProvider publicServices
-     */
-    public function testExpectedServicesArePubliclyAvaiableFromTheContainer(string $class)
+    #[DataProvider('publicServices')]
+    public function testExpectedServicesArePubliclyAvaiableFromTheContainer(string $class) : void
     {
         $client = $this->createClient();
 
@@ -111,14 +113,14 @@ class HttpTest extends WebTestCase
         return $client->getContainer()->get('log.memory_handler')->getLogs();
     }
 
-    private function assertLogsHaveRequestId($client, $id)
+    private function assertLogsHaveRequestId($client, $id) : void
     {
         foreach ($this->getLogs($client) as $msg) {
-            $this->assertStringContainsString($id, $msg); // veri
+            $this->assertStringContainsString($id, $msg);
         }
     }
 
-    private function assertSuccessfulResponse($resp)
+    private function assertSuccessfulResponse($resp) : void
     {
         $this->assertInstanceOf(Response::class, $resp);
         $this->assertGreaterThanOrEqual(200, $resp->getStatusCode());

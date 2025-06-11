@@ -1,7 +1,11 @@
 # CHANGELOG
 
-## 6.1.0
-- Added support for PHP 8.4
+## 7.0.0
+
+- Support PHP 8.4
+- Dropped PHP 8.2 Support
+- Dropped Symfony 5.X and <6.4 support
+
 ## 6.0.0
 
 - Dropped support for Symfony 4.4.X (thanks @arnedesmedt)

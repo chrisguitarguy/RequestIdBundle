@@ -12,6 +12,7 @@
 
 namespace Chrisguitarguy\RequestId\EventListener;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
@@ -28,7 +29,13 @@ class RequestIdListenerTest extends UnitTestCase
     const REQUEST_HEADER = 'Request-Id';
     const RESPONSE_HEADER = 'Response-Id';
 
-    private $idStorage, $idGen, $listener, $dispatcher, $request, $response, $kernel;
+    private RequestIdStorage&MockObject $idStorage;
+    private RequestIdGenerator&MockObject $idGen;
+    private RequestIdListener $listener;
+    private EventDispatcher $dispatcher;
+    private Request $request;
+    private Response $response;
+    private HttpKernelInterface&MockObject $kernel;
 
     public function testNonMasterRequestsDoNothingOnRequest()
     {

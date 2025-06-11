@@ -12,6 +12,7 @@
 
 namespace Chrisguitarguy\RequestId\Monolog;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
 use Monolog\Level;
@@ -20,9 +21,10 @@ use Monolog\LogRecord;
 
 class RequestIdProcessorTest extends UnitTestCase
 {
-    private $idStorage, $processor;
+    private RequestIdStorage&MockObject $idStorage;
+    private RequestIdProcessor $processor;
 
-    public function testProcessorDoesNotSetRequestIdWhenNoIdIsPresent()
+    public function testProcessorDoesNotSetRequestIdWhenNoIdIsPresent() : void
     {
         if (version_compare(Logger::API, '3', 'ge')) {
             self::markTestSkipped('The version 1 or 2 of Monolog is required to run this test.');
@@ -35,7 +37,7 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->assertArrayNotHasKey('request_id', $record['extra']);
     }
 
-    public function testProcessorAddsRequestIdWhenIdIsPresent()
+    public function testProcessorAddsRequestIdWhenIdIsPresent() : void
     {
         if (version_compare(Logger::API, '3', 'ge')) {
             self::markTestSkipped('The version 1 or 2 of Monolog is required to run this test.');
@@ -49,7 +51,7 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->assertEquals('abc123', $record['extra']['request_id']);
     }
 
-    public function testProcessorDoesNotSetRequestIdWhenNoIdIsPresentWithMonologAtLeast3()
+    public function testProcessorDoesNotSetRequestIdWhenNoIdIsPresentWithMonologAtLeast3() : void
     {
         if (version_compare(Logger::API, '3', 'lt')) {
             self::markTestSkipped('The Monolog at least 3 is required to run this test.');
@@ -64,7 +66,7 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->assertArrayNotHasKey('request_id', $record->extra);
     }
 
-    public function testProcessorAddsRequestIdWhenIdIsPresentWithMonologAtLeast3()
+    public function testProcessorAddsRequestIdWhenIdIsPresentWithMonologAtLeast3() : void
     {
         if (version_compare(Logger::API, '3', 'lt')) {
             self::markTestSkipped('The Monolog at least 3 is required to run this test.');
@@ -86,7 +88,7 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->processor = new RequestIdProcessor($this->idStorage);
     }
 
-    private function withRequestId($id)
+    private function withRequestId($id) : void
     {
         $this->idStorage->expects($this->once())
             ->method('getRequestId')

@@ -17,10 +17,11 @@ use Chrisguitarguy\RequestId\UnitTestCase;
 
 class RamseyUuid4GeneratorTest extends UnitTestCase
 {
-    public function testGenerateReturnsANewStringIdentifier()
+    public function testGenerateReturnsANewStringIdentifier() : void
     {
         if (!interface_exists(UuidFactoryInterface::class)) {
-            return $this->markTestSkipped(sprintf('%s requires the %s class', __METHOD__, UuidFactoryInterface::class));
+            $this->markTestSkipped(sprintf('%s requires the %s class', __METHOD__, UuidFactoryInterface::class));
+            return;
         }
 
         // we're not going to mock anything here, I'm more
