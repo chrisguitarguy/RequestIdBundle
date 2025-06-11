@@ -4,7 +4,7 @@
 
 - Support PHP 8.4
 - Dropped PHP 8.2 Support
-- Dropped Symfony 5.X support
+- Dropped Symfony 5.X and <6.4 support
 
 ## 6.0.0
 
