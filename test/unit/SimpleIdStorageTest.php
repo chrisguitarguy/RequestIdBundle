@@ -14,7 +14,7 @@ namespace Chrisguitarguy\RequestId;
 
 class SimpleIdStorageTest extends UnitTestCase
 {
-    public function testGetRequestIdReturnsTheSameValueThatWasSet()
+    public function testGetRequestIdReturnsTheSameValueThatWasSet() : void
     {
         $s = new SimpleIdStorage();
 
@@ -23,7 +23,7 @@ class SimpleIdStorageTest extends UnitTestCase
         $this->assertEquals('test', $s->getRequestId());
     }
 
-    public function testNullCanBePassedToSetRequestIdToClearIt()
+    public function testNullCanBePassedToSetRequestIdToClearIt() : void
     {
         $s = new SimpleIdStorage();
         $s->setRequestId('test');
