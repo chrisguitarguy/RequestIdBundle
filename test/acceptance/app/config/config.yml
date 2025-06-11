@@ -10,7 +10,10 @@ framework:
         strict_requirements: "%kernel.debug%"
         utf8: true
     default_locale:  "%locale%"
-
+    http_method_override: false
+    handle_all_throwables: true
+    php_errors:
+      log: true
 twig:
   strict_variables: "%kernel.debug%"
   paths:
