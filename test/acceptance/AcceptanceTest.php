@@ -100,6 +100,15 @@ class AcceptanceTest extends WebTestCase
         $this->assertInstanceOf($class, $service);
     }
 
+    public function testMonologFieldNameParameterIsAvailable() : void
+    {
+        $client = $this->createClient();
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->hasParameter('chrisguitarguy_request_id.monolog_field_name'));
+        $this->assertEquals('request_id', $container->getParameter('chrisguitarguy_request_id.monolog_field_name'));
+    }
+
     protected static function getKernelClass() : string
     {
         return TestKernel::class;

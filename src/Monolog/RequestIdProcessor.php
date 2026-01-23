@@ -27,11 +27,17 @@ final class RequestIdProcessor
     /**
      * @var RequestIdStorage
      */
-    private $idStorage;
+    private RequestIdStorage $idStorage;
 
-    public function __construct(RequestIdStorage $storage)
+    /**
+     * @var string
+     */
+    private string $fieldName;
+
+    public function __construct(RequestIdStorage $storage, string $fieldName = 'request_id')
     {
         $this->idStorage = $storage;
+        $this->fieldName = $fieldName;
     }
 
     /**
@@ -43,9 +49,9 @@ final class RequestIdProcessor
     {
         if ($id = $this->idStorage->getRequestId()) {
             if ($record instanceof LogRecord) {
-                $record->extra['request_id'] = $id;
+                $record->extra[$this->fieldName] = $id;
             } else {
-                $record['extra']['request_id'] = $id;
+                $record['extra'][$this->fieldName] = $id;
             }
         }
 

@@ -35,6 +35,9 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 {
     protected function loadInternal(array $config, ContainerBuilder $container) : void
     {
+        // Set the monolog field name as a container parameter
+        $container->setParameter('chrisguitarguy_request_id.monolog_field_name', $config['monolog_field_name']);
+
         $container->register(SimpleIdStorage::class)
             ->setPublic(false);
         $container->register(RamseyUuid4Generator::class)
@@ -62,6 +65,7 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
         if (!empty($config['enable_monolog'])) {
             $container->register(RequestIdProcessor::class)
                 ->addArgument(new Reference($storeId))
+                ->addArgument($config['monolog_field_name'])
                 ->setPublic(false)
                 ->addTag('monolog.processor');
         }
