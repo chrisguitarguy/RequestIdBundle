@@ -33,15 +33,15 @@ use Chrisguitarguy\RequestId\Twig\RequestIdExtension;
  */
 final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 {
-    protected function loadInternal(array $config, ContainerBuilder $container) : void
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container) : void
     {
         $container->register(SimpleIdStorage::class)
             ->setPublic(false);
         $container->register(RamseyUuid4Generator::class)
             ->setPublic(false);
 
-        $storeId = empty($config['storage_service']) ? SimpleIdStorage::class : $config['storage_service'];
-        $genId = empty($config['generator_service']) ? RamseyUuid4Generator::class : $config['generator_service'];
+        $storeId = empty($mergedConfig['storage_service']) ? SimpleIdStorage::class : $mergedConfig['storage_service'];
+        $genId = empty($mergedConfig['generator_service']) ? RamseyUuid4Generator::class : $mergedConfig['generator_service'];
 
         $container->setAlias(RequestIdStorage::class, $storeId)
             ->setPublic(true);
@@ -50,23 +50,23 @@ final class ChrisguitarguyRequestIdExtension extends ConfigurableExtension
 
         $container->register(RequestIdListener::class)
             ->setArguments([
-                $config['request_header'],
-                $config['response_header'],
-                $config['trust_request_header'],
+                $mergedConfig['request_header'],
+                $mergedConfig['response_header'],
+                $mergedConfig['trust_request_header'],
                 new Reference($storeId),
                 new Reference($genId),
             ])
             ->setPublic(false)
             ->addTag('kernel.event_subscriber');
 
-        if (!empty($config['enable_monolog'])) {
+        if (!empty($mergedConfig['enable_monolog'])) {
             $container->register(RequestIdProcessor::class)
                 ->addArgument(new Reference($storeId))
                 ->setPublic(false)
                 ->addTag('monolog.processor');
         }
 
-        if (class_exists('Twig\Extension\AbstractExtension') && !empty($config['enable_twig'])) {
+        if (class_exists('Twig\Extension\AbstractExtension') && !empty($mergedConfig['enable_twig'])) {
             $container->register(RequestIdExtension::class)
                 ->addArgument(new Reference($storeId))
                 ->setPublic(false)
