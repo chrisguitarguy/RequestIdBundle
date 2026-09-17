@@ -70,9 +70,18 @@ chrisguitarguy_request_id:
     # Whether or not to add the monolog process (see below), defaults to true
     enable_monolog: true
 
+    # The field name used in Monolog's extra array to store the request ID, defaults to 'request_id'
+    # This value is also available as a container parameter: %chrisguitarguy_request_id.monolog_field_name%
+    monolog_field_name: request_id
+
     # Whether or not to add the twig extension (see below), defaults to true
     enable_twig: true
 ```
+
+**Note**: The `monolog_field_name` is exposed as a container parameter 
+(`%chrisguitarguy_request_id.monolog_field_name%`) which can be referenced in your 
+service definitions. This is particularly useful when configuring Monolog formatters 
+(see [Monolog Integration](#monolog-integration) for examples).
 
 ## How it Works
 
@@ -98,6 +107,15 @@ configuration.
 To use the request ID in your logs, include `%extra.request_id%` in your
 formatter. Here's a configuration example from this bundle's tests.
 
+You can customize the field name in the `extra` array by setting the
+`monolog_field_name` option in the configuration. For example, if you set
+`monolog_field_name: my_request_id`, you would use `%extra.my_request_id%` in
+your formatter instead.
+
+The bundle also exposes the field name as a container parameter 
+`%chrisguitarguy_request_id.monolog_field_name%` that you can use in your service
+definitions to avoid hardcoding the field name.
+
 ```yaml
 # http://symfony.com/doc/current/cookbook/logging/monolog.html#changing-the-formatter
 
@@ -114,6 +132,32 @@ monolog:
             level: debug
             formatter: request_id_formatter
 ```
+
+Example with a custom field name using the container parameter:
+
+```yaml
+# app/config/config.yml
+
+chrisguitarguy_request_id:
+    monolog_field_name: my_request_id
+
+services:
+    custom_request_id_formatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%level_name%% - %%extra.%chrisguitarguy_request_id.monolog_field_name%%%] %%message%%"
+
+monolog:
+    handlers:
+        file:
+            type: stream
+            level: debug
+            formatter: custom_request_id_formatter
+```
+
+This approach ensures that if you change `monolog_field_name` in your configuration,
+your formatter will automatically use the new field name without needing to update
+it in multiple places.
 
 ## Twig Integration
 

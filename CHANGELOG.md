@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+- Added `monolog_field_name` configuration option to customize the field name used in Monolog's extra array (defaults to `request_id`)
+- Added container parameter `chrisguitarguy_request_id.monolog_field_name` to allow referencing the field name in service definitions
+
 ## 7.0.0
 
 - Support PHP 8.4

@@ -82,6 +82,41 @@ class RequestIdProcessorTest extends UnitTestCase
         $this->assertEquals('abc123', $record->extra['request_id']);
     }
 
+    public function testProcessorUsesCustomFieldNameWithArray() : void
+    {
+        if (version_compare(Logger::API, '3', 'ge')) {
+            self::markTestSkipped('The version 1 or 2 of Monolog is required to run this test.');
+        }
+
+        $processor = new RequestIdProcessor($this->idStorage, 'custom_request_id');
+        $this->withRequestId('custom123');
+
+        $record = call_user_func($processor, ['extra' => []]);
+
+        $this->assertArrayHasKey('custom_request_id', $record['extra']);
+        $this->assertEquals('custom123', $record['extra']['custom_request_id']);
+        $this->assertArrayNotHasKey('request_id', $record['extra']);
+    }
+
+    public function testProcessorUsesCustomFieldNameWithLogRecord() : void
+    {
+        if (version_compare(Logger::API, '3', 'lt')) {
+            self::markTestSkipped('The Monolog at least 3 is required to run this test.');
+        }
+
+        $processor = new RequestIdProcessor($this->idStorage, 'custom_request_id');
+        $this->withRequestId('custom123');
+
+        $record = call_user_func(
+            $processor,
+            new LogRecord(new \DateTimeImmutable('now'), 'channel', Level::Info, 'foo')
+        );
+
+        $this->assertArrayHasKey('custom_request_id', $record->extra);
+        $this->assertEquals('custom123', $record->extra['custom_request_id']);
+        $this->assertArrayNotHasKey('request_id', $record->extra);
+    }
+
     protected function setUp(): void
     {
         $this->idStorage = $this->createMock(RequestIdStorage::class);
