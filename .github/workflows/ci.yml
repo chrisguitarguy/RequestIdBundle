@@ -22,17 +22,17 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - '8.3'
           - '8.4'
+          - '8.5'
         symfony-require:
-          - '6.*'
           - '7.*'
+          - '8.*'
         composer-flags:
           - ''
           - '--prefer-lowest'
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7"
         with:
           fetch-depth: 2
 
@@ -48,7 +48,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.composercache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}

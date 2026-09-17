@@ -13,6 +13,7 @@
 namespace Chrisguitarguy\RequestId\EventListener;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use Chrisguitarguy\RequestId\RequestIdGenerator;
 use Chrisguitarguy\RequestId\RequestIdStorage;
 use Chrisguitarguy\RequestId\UnitTestCase;
@@ -35,9 +36,9 @@ class RequestIdListenerTest extends UnitTestCase
     private EventDispatcher $dispatcher;
     private Request $request;
     private Response $response;
-    private HttpKernelInterface&MockObject $kernel;
+    private HttpKernelInterface&Stub $kernel;
 
-    public function testNonMasterRequestsDoNothingOnRequest()
+    public function testSubRequestRequestsDoNothingOnRequest()
     {
         $event = new RequestEvent(
             $this->kernel,
@@ -46,6 +47,7 @@ class RequestIdListenerTest extends UnitTestCase
         );
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
+        $this->willNotGenerate();
 
         $this->dispatcher->dispatch($event, KernelEvents::REQUEST);
     }
@@ -76,6 +78,7 @@ class RequestIdListenerTest extends UnitTestCase
             ->willReturn('abc123');
         $this->idStorage->expects($this->never())
             ->method('setRequestId');
+        $this->willNotGenerate();
         $event = new RequestEvent(
             $this->kernel,
             $this->request,
@@ -142,10 +145,11 @@ class RequestIdListenerTest extends UnitTestCase
         $this->assertEquals('def234', $this->request->headers->get(self::REQUEST_HEADER));
     }
 
-    public function testListenerDoesNothingToResponseWithoutMasterRequest()
+    public function testListenerDoesNothingToResponseOnSubRequests()
     {
         $this->idStorage->expects($this->never())
             ->method('getRequestId');
+        $this->willNotGenerate();
 
         $this->dispatcher->dispatch(
             new ResponseEvent(
@@ -165,6 +169,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->once())
             ->method('getRequestId')
             ->willReturn(null);
+        $this->willNotGenerate();
 
         $this->dispatcher->dispatch(
             new ResponseEvent(
@@ -184,6 +189,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->idStorage->expects($this->once())
             ->method('getRequestId')
             ->willReturn('ghi345');
+        $this->willNotGenerate();
 
         $this->dispatcher->dispatch(
             new ResponseEvent(
@@ -213,7 +219,7 @@ class RequestIdListenerTest extends UnitTestCase
         $this->dispatcher->addSubscriber($this->listener);
         $this->request = Request::create('/');
         $this->response = new Response('Hello, World');
-        $this->kernel = $this->createMock(HttpKernelInterface::class);
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     private function willNotGenerate()

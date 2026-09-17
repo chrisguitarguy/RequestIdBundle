@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 8.0.0
+
+- Drop PHP 8.3 Support
+- Drop Symfony 6.4 Support
+- Drop Monolog 2.X Support
+
 ## 7.0.0
 
 - Support PHP 8.4
